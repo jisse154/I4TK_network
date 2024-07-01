@@ -1,0 +1,27 @@
+{
+    "name": "I4TK document Token #{id}",
+    "description": "A content proposed by a member of the I4KT network community",
+    "content": "ipfs://{CID}",
+    "properties": {
+        "title": {
+            "type": "string",
+            "description": "title of the docuement"
+        },
+        "authors": {
+            "type": "array",
+            "description": "The list of the authors of the docuement"
+        },
+        "description": {
+            "type": "string",
+            "description": "Describes the content to which this token represents"
+        },
+        "programme": {
+            "type": "string",
+            "description": "progremmme name"
+        },
+        "category": {
+            "type": "string",
+            "description": "category relative to the content"
+        }
+    }
+}
