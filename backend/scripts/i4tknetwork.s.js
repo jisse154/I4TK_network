@@ -1,22 +1,44 @@
 const hre = require("hardhat");
+require("@nomicfoundation/hardhat-ethers");
 
 async function main() {
 
-  const {owner , addr1, addr2, addr3}=hre.ethers.getSigners();
+    
 
+  const[deployer]= await hre.ethers.getSigners();
 
-  const I4TKNetwork = await hre.ethers.deployContract("I4TKNetwork");
-
-  await I4TKNetwork.waitForDeployment();
 
   console.log(
-    `Bank deployed to ${I4TKNetwork.target}`
+    "Deploying contracts with the account:",
+    deployer.address
+    );
+
+
+
+  const I4TKToken = await ethers.getContractFactory("I4TKdocToken");
+  const token = await I4TKToken.deploy(deployer.address);
+
+
+  console.log(
+    `token deployed to ${token.target}`
+  );
+
+  const I4TKnetwork = await ethers.getContractFactory("I4TKdocToken");
+  const contract = await I4TKnetwork.deploy(token.target);
+
+  console.log(
+    `contract deployed to ${contract.target}`
   );
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main()
+  .then(() => process.exit(0))
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
+
+
+  //commande: npx hardhat run scripts/i4tknetwork.s.js  --network sepolia/localhost
