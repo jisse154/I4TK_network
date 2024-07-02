@@ -26,6 +26,7 @@ import {
 
 
 import RegisterMember from "@/components/shared/RegisterMember";
+import RevokeMember from "@/components/shared/RevokeMember";
 import { useState } from "react";
 
 
@@ -51,7 +52,7 @@ const page = () => {
                     <RegisterMember />
                 </TabsContent>
                 <TabsContent value="revoke">
-                    
+                    <RevokeMember/>
                 </TabsContent>
                 <TabsContent value="member_profile">
                     

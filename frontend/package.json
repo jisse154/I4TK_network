@@ -31,6 +31,7 @@
     "wagmi": "^2.10.9"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "postcss": "^8",
