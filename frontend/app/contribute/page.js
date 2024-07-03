@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from "react";
+import ContentNotValidated from "../../components/shared/ContentNotValidated";
 
 
 
@@ -21,7 +22,7 @@ const page = () => {
                             <div className="w-full md:w-1/2 px-2 mb-4 md:mb-0">
                                 <div className="flex flex-wrap items-end">
                                     <div className="w-auto mr-3">
-                                        <h2 className="text-lg font-semibold text-white">Recent publication</h2>
+                                        <h2 className="text-lg font-semibold text-white">Recent publications</h2>
                                     </div>
                                     <div className="relative bottom-px pb-px w-auto">
                                     </div>
@@ -43,6 +44,8 @@ const page = () => {
                     <a href="/contribute/propose"><button className="inline-block text-lg font-medium text-center focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border-transparent rounded-md shadow-sm h-full w-full border bg-orange-300 text-white hover:bg-orange-600 " type="submit" >Propose A Content</button> </a>
                 </div>
             </div>
+            <ContentNotValidated/>
+            <ContentNotValidated/>
 
 
         </>

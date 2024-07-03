@@ -31,9 +31,11 @@ const page = () => {
         <form className="m-5">
             <div className="space-y-6">
                 <div className="border-b border-gray-900/10 pb-12">
-                    <h2 className="text-base font-semibold leading-7 text-gray-900">Profile</h2>
+                    <div className="max-w-4xl mx-auto text-center">
+                        <h2 className="mb-4 text-3xl md:text-4xl font-heading font-bold">Propose Content</h2>
+                    </div>
                     <p className="mt-1 text-sm leading-6 text-gray-600">
-                        This information will be displayed publicly so be careful what you share.
+                        Please enter all informations needed:
                     </p>
 
                     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -60,7 +62,7 @@ const page = () => {
                             </label>
                             <div className="mt-2">
                                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                    
+
                                     <input
                                         type="text"
                                         name="CID"
@@ -138,7 +140,7 @@ const page = () => {
                             </button>
                         </div>
                         <div>
-                           
+
 
                             <table>
                                 <thead>
