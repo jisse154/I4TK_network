@@ -31,7 +31,7 @@ import { useState } from "react";
 
 
 
-const page = () => {
+const Page = () => {
 
     const [openTab, setOpenTab] = useState("New_Member");
 
@@ -64,4 +64,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

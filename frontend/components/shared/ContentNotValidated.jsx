@@ -16,7 +16,7 @@ const ContentNotValidated = () => {
 
                 <a className="inline-block mb-1 text-3xl leading-tight text-coolGray-800 hover:text-coolGray-900 font-bold hover:underline" href="#">Title</a><span className="text-xl ml-5"># Token id</span>
                 <p className="mb-4 text-base font-style: italic md:text-lg text-coolGray-800 font-small">Authors</p>
-                <p className="mb-4 text-base md:text-lg text-Gray-400 font-medium">We've all experienced the chaos of multiple spreadsheets, tracking and insight tools, and scrambling for the right data at the right time.</p>
+                <p className="mb-4 text-base md:text-lg text-Gray-400 font-medium">We&apos;ve all experienced the chaos of multiple spreadsheets, tracking and insight tools, and scrambling for the right data at the right time.</p>
                 <p className="mb-2 text-coolGray-500 font-medium">Posted by 0xabc....c45d • Proposed date: 19 Jan 2022</p>
                 <div className="flex justify-between">
                     <a className="inline-flex items-center text-base md:text-lg text-green-500 hover:text-green-600 font-semibold" href="#">

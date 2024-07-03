@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 
 
-const page = () => {
+const Page = () => {
 
     // État pour les valeurs des inputs et les lignes de la table
     const [inputValues, setInputValues] = useState({ token: '', title: '', CID: '' });
@@ -273,4 +273,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
