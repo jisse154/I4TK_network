@@ -87,7 +87,6 @@ const Page = () => {
                                     defaultValue={''}
                                 />
                             </div>
-                            <p className="mt-3 text-sm leading-6 text-gray-600">Write a few sentences about yourself.</p>
                         </div>
 
                         <div className="col-span-full">
