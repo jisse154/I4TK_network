@@ -2,7 +2,7 @@ import { STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR } from "next/dist/lib/consta
 
 export const I4TKTokenAddress="0x231e2558e9289A42E55690Fe7E47cFcb9F0644d2"   // ---> for SEPOLIA used for test
 export const I4TKnetworkAddress="0xFFe2a9d274Ef62469467B48ba755fDd1347d1327"  // ---> for SEPOLIA used for test
-//export const contractAddress="0xA275c5e94f0A49bF61268B171C12f754063A3024"  // ---> for SEPOLIA (vote not strated) 
+export const contractAddress="0xA275c5e94f0A49bF61268B171C12f754063A3024"  // ---> for SEPOLIA (vote not strated) 
 export const contractAbi= [
   {
     "inputs": [],
