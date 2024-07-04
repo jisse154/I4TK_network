@@ -1,58 +1,59 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from "react";
-import { contractAddress, contractAbi } from "@/constants";
-import { useAccount, useReadContract } from 'wagmi'
+import { I4TKnetworkAddress, I4TKnetworkABI } from "@/constants";
+import { useAccount, useReadContract, useAccountEffect} from 'wagmi';
+import {watchAccount} from '@wagmi/core';
+import { config1 } from "@/app/RainbowKitAndWagmiProvider";
+import { ethers } from "ethers";
 
-const AppContext = createContext({});
+const AppContext = createContext();
+
+// async function getMember(_address) {
+//     const provider = new ethers.JsonRpcProvider('https://eth-sepolia.g.alchemy.com/v2/iBWOg76BlGKnGoRyxmH9yQ-LaeuyRuQi');
+//     const contract = new ethers.Contract(I4TKnetworkAddress, I4TKnetworkABI, provider);
+
+//     const x = await contract.callstatic.Members(_address);
+//     return x
+// }
+
+export const AppContextProvider = ({ children }) => {
+
+    const [profile, setProfile] = useState('');
+
+    const { _address } = useAccount()
+
+    const [address, setAddress] = useState(_address);
+
+    
+
+    const unwatch = watchAccount(config1, {
+        onChange(data) {
+          setAddress(data.address);
+        },
+      });
 
 
-export const AppContextProvider =  ({ children }) => {
-
-    const { address } = useAccount()
-
-    const [voters, setVoters] = useState('');
-
-    const { data: voter , isSuccess, refetch : refetchProjects} = useReadContract({
-        abi: contractAbi,
-        address: contractAddress,
-        functionName: 'getVoter',
+    const { data: member, isSuccess, refetch: refetchProjects } = useReadContract({
+        abi: I4TKnetworkABI,
+        address: I4TKnetworkAddress,
+        functionName: 'Members',
+        args: [address],
         account: address,
-        args: [address]
-    });
-
-    const { data: owner } = useReadContract({
-        abi: contractAbi,
-        address: contractAddress,
-        functionName: 'owner',
     });
 
 
-    const { data: voteStatus, refetch } = useReadContract({
-        abi: contractAbi,
-        address: contractAddress,
-        functionName: 'workflowStatus'
-    });
 
-    let isRegistered = false;
-    let hasVoted = false;
-    if (voter !== undefined) {isRegistered = voter.isRegistered } ;
-    if (voter !== undefined) {hasVoted = voter.hasVoted } ;
+    useEffect(() => {
 
-    //const hasVoted=voter.hasVoted;
+        console.log(member);
+        if (member !== undefined) { setProfile(member[0]) };
 
-
-    let isOwner = false;
-    if (owner == address) { isOwner = true };
-
+    }, [isSuccess, address]);
 
     return (
         <AppContext.Provider value={{
             address,
-            hasVoted,
-            isRegistered,
-            isOwner,
-            voteStatus,
-            refetch
+            profile,
 
         }}>
             {children}
