@@ -7,11 +7,9 @@ import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "./I4TKdocToken.sol";
 
-
-
 contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
-
     enum Profiles {
+        publicUSer,
         researcher,
         labs,
         admin
@@ -24,12 +22,9 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         removed
     }
 
-
-    
     address public I4TKdocTokenAddr;
     I4TKdocToken token;
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-    //bytes32 public constant READONLY_ROLE = keccak256("READONLY_ROLE");
     bytes32 public constant CONTRIBUTOR_ROLE = keccak256("CONTRIBUTOR_ROLE");
     bytes32 public constant VALIDATOR_ROLE = keccak256("VALIDATOR_ROLE");
 
@@ -43,165 +38,164 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         bool hasValidated;
     }
 
-    mapping (uint256=> Validator) public validator;
-
-    event memberRegistered(address _addr, Profiles  _profile);
-    event contentProposed(address _addr, uint256 _tokenID );
-    event contentValidation(address _addr, uint256 _tokenID);
-
+    mapping(uint256 tokenId => Validator) public contentValidator;
     mapping(address => MetadataOfMember) public Members;
-    mapping(uint256 => Status) public status;
-    mapping(uint256 => uint256) public nbValidation;
+    mapping(uint256 tokenId => Status) public status;
+    mapping(uint256 tokenId => uint256) public nbValidation;
 
+    event memberRegistered(address addr, Profiles profile);
+    event contentProposed(
+        address indexed creator,
+        uint256 indexed tokenId,
+        string tokenURI,
+        uint256 date
+    );
+    event contentValidation(address indexed validator, uint256 indexed tokenId);
+    event contentPublished(
+        address indexed creator,
+        uint256 indexed tokenId,
+        string tokenURI,
+        uint256 date
+    );
 
     constructor(address _I4TKdocTokenAddr) Ownable(msg.sender) {
-
-        I4TKdocTokenAddr=_I4TKdocTokenAddr;
-        token=I4TKdocToken(I4TKdocTokenAddr);
+        I4TKdocTokenAddr = _I4TKdocTokenAddr;
+        token = I4TKdocToken(I4TKdocTokenAddr);
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(ADMIN_ROLE, msg.sender);
         _setRoleAdmin(CONTRIBUTOR_ROLE, ADMIN_ROLE);
         _setRoleAdmin(VALIDATOR_ROLE, ADMIN_ROLE);
     }
 
-    // function memberApply( string memory _name , string memory _contractName, string memory _contractEmail, string memory _typeName) external {
-    //     memberMetadata[msg.sender].name=  _name ;
-    //     memberMetadata[msg.sender].contractName= _contractName;
-    //     memberMetadata[msg.sender].contractEmail=  _contractEmail;
-    //     memberMetadata[msg.sender].typeName= _typeName;
-    //     applyAddrIndex[msg.sender]= applications.length;
-    //     applications.push(msg.sender);
-    // }
-
-    // function applicationsRemove(uint index)  private returns(address[] storage) {
-    //     if (index >= applications.length) return applications;
-
-    //     for (uint i = index; i<applications.length-1; i++){
-    //         applications[i] = applications[i+1];
-    //     }
-    //     delete applications[applications.length-1];
-    //     applications.pop();
-    //     return applications;
-    // }
-
-    function supportsInterface(bytes4 interfaceId) public view override(AccessControl, ERC1155Holder) returns (bool) {
-        return (
-            AccessControl.supportsInterface(interfaceId) ||
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override(AccessControl, ERC1155Holder) returns (bool) {
+        return (AccessControl.supportsInterface(interfaceId) ||
             ERC1155Holder.supportsInterface(interfaceId) ||
-            super.supportsInterface(interfaceId)
-        );
-
+            super.supportsInterface(interfaceId));
     }
 
-    function getProfilesKeys() public pure  returns (string memory, string memory , string memory) {
-        return ("Researcher", "labs", "Admin");
+    function getProfilesKeys()
+        public
+        pure
+        returns (string memory, string memory, string memory, string memory)
+    {
+        return ("publicUser", "researcher", "labs", "admin");
     }
 
-    function getProfilesKeyByValue(Profiles profile) public pure  returns (string memory) {
-        if (Profiles.researcher == profile) return "Researcher";
-        if (Profiles.labs == profile) return "Labs";
-        if (Profiles.admin == profile) return "Admin";
+    function getProfilesKeyByValue(
+        Profiles profile
+    ) public pure returns (string memory) {
+        if (Profiles.publicUSer == profile) return "publicUser";
+        if (Profiles.researcher == profile) return "researcher";
+        if (Profiles.labs == profile) return "labs";
+        if (Profiles.admin == profile) return "admin";
         return "";
     }
 
-    function getProfilesValueByKey(string memory _profile) external pure returns (Profiles) {
-        if (keccak256(abi.encodePacked(_profile)) == keccak256("Researcher")) return Profiles.researcher;
-        if (keccak256(abi.encodePacked(_profile)) == keccak256("Labs")) return Profiles.labs;
-        if (keccak256(abi.encodePacked(_profile)) == keccak256("Admin")) return Profiles.admin;
+    function getProfilesValueByKey(
+        string memory profile
+    ) external pure returns (Profiles) {
+        if (keccak256(abi.encodePacked(profile)) == keccak256("publicUser"))
+            return Profiles.publicUSer;
+        if (keccak256(abi.encodePacked(profile)) == keccak256("researcher"))
+            return Profiles.researcher;
+        if (keccak256(abi.encodePacked(profile)) == keccak256("labs"))
+            return Profiles.labs;
+        if (keccak256(abi.encodePacked(profile)) == keccak256("admin"))
+            return Profiles.admin;
         revert();
     }
 
     function registerMember(
-        address _addr,
-        Profiles _profile
+        address addr,
+        Profiles profile
     ) external onlyRole(ADMIN_ROLE) {
         require(
-            _profile == Profiles.researcher ||
-                _profile == Profiles.labs ||
-                _profile == Profiles.admin,
+            profile == Profiles.researcher ||
+                profile == Profiles.labs ||
+                profile == Profiles.admin,
             "Profile name not recognized!"
         );
 
-        if (_profile == Profiles.researcher) {
-            grantRole(CONTRIBUTOR_ROLE, _addr);
-            token.grantRole(keccak256("MINTER_ROLE"),_addr);
-
-            //add token roles
+        if (profile == Profiles.researcher) {
+            grantRole(CONTRIBUTOR_ROLE, addr);
         }
 
-        if (_profile == Profiles.labs) {
-            grantRole(CONTRIBUTOR_ROLE, _addr);
-            grantRole(VALIDATOR_ROLE, _addr);
-            token.grantRole(keccak256("MINTER_ROLE"),_addr);
-
-            //add token roles
-
+        if (profile == Profiles.labs) {
+            grantRole(CONTRIBUTOR_ROLE, addr);
+            grantRole(VALIDATOR_ROLE, addr);
         }
 
-        if (_profile == Profiles.admin) {
-            grantRole(ADMIN_ROLE, _addr);
-            token.grantRole(keccak256("DEFAULT_ADMIN_ROLE"),_addr);
+        if (profile == Profiles.admin) {
+            grantRole(ADMIN_ROLE, addr);
         }
 
-        Members[_addr].profile= _profile;
-        Members[_addr].isMember = true;
-        // applications=applicationsRemove(applyAddrIndex[_addr]);
+        Members[addr].profile = profile;
+        Members[addr].isMember = true;
 
-        emit memberRegistered(_addr, _profile);
+        emit memberRegistered(addr, profile);
     }
 
-    function proposeContent(string memory _tokenURI,uint256[] memory _references) external onlyRole(CONTRIBUTOR_ROLE) {
-
+    function proposeContent(
+        string memory tokenURI,
+        uint256[] memory references
+    ) external onlyRole(CONTRIBUTOR_ROLE) {
         bytes memory data;
-        address _creator;
-        _creator=msg.sender;
-        uint256 tokenId = token.mint( address(this) ,_tokenURI,_references, data);
-        nbValidation[tokenId]=0;
-        status[tokenId]=Status.proposed;
-        emit contentProposed(_creator, tokenId);
+        address creator;
+        creator = msg.sender;
+        uint256 tokenId = token.mint(address(this), tokenURI, references, data);
+        nbValidation[tokenId] = 0;
+        status[tokenId] = Status.proposed;
 
-
+        emit contentProposed(creator, tokenId, tokenURI, block.timestamp);
     }
 
+    function valideContent(uint256 tokenId) external onlyRole(VALIDATOR_ROLE) {
+        require(
+            !contentValidator[tokenId].hasValidated,
+            "You have already validated this content"
+        );
 
-    function validation(uint256 _tokenId) external onlyRole(VALIDATOR_ROLE) {
-        require(!validator[_tokenId].hasValidated, "You have already validated this content");
-
-
-        nbValidation[_tokenId]++;
+        nbValidation[tokenId]++;
         Validator memory _validator;
-        _validator.validatorAddr=msg.sender;
-        _validator.hasValidated=true;
+        _validator.validatorAddr = msg.sender;
+        _validator.hasValidated = true;
 
-        validator[_tokenId]=_validator;
-        if (nbValidation[_tokenId] ==4) {
-            _distribution(_tokenId);
+        contentValidator[tokenId] = _validator;
+        if (nbValidation[tokenId] == 4) {
+            _distribution(tokenId);
+            emit contentPublished(
+                token.getTokenCreator(tokenId),
+                tokenId,
+                token.uri(tokenId),
+                block.timestamp
+            );
         }
 
-        emit contentValidation(msg.sender, _tokenId);
+        emit contentValidation(msg.sender, tokenId);
+    }
 
-
-    }  
-
-
-    function _distribution(uint _tokenId) private onlyRole(VALIDATOR_ROLE){
-
-        uint256 nbContrib=token.getLengthContrib(_tokenId);
+    function _distribution(uint _tokenId) private onlyRole(VALIDATOR_ROLE) {
+        uint256 nbContrib = token.getLengthContrib(_tokenId);
 
         uint256[2][] memory contribList = new uint256[2][](nbContrib);
-        contribList=token.getcontributions(_tokenId, nbContrib);
+        contribList = token.getcontributions(_tokenId, nbContrib);
 
-        for(uint256 i=0; i<contribList.length; i++) {
-            uint256 tokenIdToSend= contribList[i][0];
+        for (uint256 i = 0; i < contribList.length; i++) {
+            uint256 tokenIdToSend = contribList[i][0];
             address _to;
-            _to = token.creator(tokenIdToSend);
-            uint256 _value=token.balanceOf(address(this),tokenIdToSend) * contribList[i][1] / 1e6;
-            token.safeTransferFrom(address(this), _to, tokenIdToSend, _value,"");
-
+            _to = token.getTokenCreator(tokenIdToSend);
+            uint256 _value = (token.balanceOf(address(this), tokenIdToSend) *
+                contribList[i][1]) / 1e6;
+            token.safeTransferFrom(
+                address(this),
+                _to,
+                tokenIdToSend,
+                _value,
+                ""
+            );
         }
-
-
     }
-    //function trashEmpty() 
-
+    //function trashEmpty()
 }

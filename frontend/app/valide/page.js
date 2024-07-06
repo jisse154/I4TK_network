@@ -1,11 +1,87 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { publicClient } from "@/utils/client"
+
 import ContentNotValidated from "../../components/shared/ContentNotValidated";
+import { I4TKnetworkAddress, I4TKnetworkABI } from "@/constants";
+import { parseAbiItem } from "viem";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { parseBase64DataURL, timestampToDateString } from "@/utils/utils";
 
 
 
 const page = () => {
+
+    const { address } = useAccount()
+    const [events, setEvents] = useState([])
+
+    const [contents, setContents] = useState([])
+
+    const getEvents = async () => {
+        const proposeEvents = await publicClient.getLogs({
+            address: I4TKnetworkAddress,
+            event: parseAbiItem('event contentProposed(address indexed addr, uint256 indexed tokenID, string tokenURI, uint256 date)'),
+            fromBlock: 0n,
+            toBlock: 'latest'
+        });
+
+        setEvents(proposeEvents);
+    }
+
+    useEffect(() => {
+        const getAllEvents = async () => {
+            if (address !== 'undefined') {
+                await getEvents();
+            }
+        }
+        getAllEvents();
+
+        console.log(events);
+    }, [])
+
+    const testlog = () => {
+
+        console.log(contents);
+    }
+
+    useEffect(() => {
+
+
+        if (events.length !== 0) {
+
+            console.log(events);
+
+            console.log(events[0].args.tokenURI)
+            const tokenURIJson = parseBase64DataURL(events[0].args.tokenURI);
+            console.log(tokenURIJson);
+            let i=0;
+            events.map((e) => {
+                i++;
+                console.log(i);
+                const tokenURIJson = parseBase64DataURL(e.args.tokenURI);
+                const postBy = e.args.addr;
+                const dateString = timestampToDateString(Number(e.args.date));
+                const token = Number(e.args.tokenID);
+                setContents((e) => [...e, {tokenId: token, tokenURIJson: tokenURIJson, postedBy: postBy, proposedDate: dateString }])
+
+            })
+
+          
+
+        }
+    }, [events])
+
+    useEffect(() => {
+
+        if (contents.length!==0) {
+            console.log(contents);
+
+        }
+
+    }, [contents])
+
+
 
     return (
         <>
@@ -41,11 +117,17 @@ const page = () => {
                     </section>
                 </div>
                 <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0 pr-10">
-                    <a href="/contribute/propose"><button className="inline-block text-lg font-medium text-center focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border-transparent rounded-md shadow-sm h-full w-full border bg-orange-300 text-white hover:bg-orange-600 " type="submit" >Propose A Content</button> </a>
+                    <a href="/contribute/propose"><button className="inline-block text-lg font-medium text-center focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border-transparent rounded-md shadow-sm h-full w-full border bg-orange-300 text-white hover:bg-orange-600 " type="submit" >Propose A New Content</button> </a>
+                </div>
+                <div>
+                    <button onClick={testlog} className="inline-block text-lg font-medium text-center focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border-transparent rounded-md shadow-sm h-full w-full border bg-orange-300 text-white hover:bg-orange-600 " type="button" >test</button>
                 </div>
             </div>
-            <ContentNotValidated/>
-            <ContentNotValidated/>
+            {contents.map((content, index) => {
+                return(
+                <ContentNotValidated key={index} content={JSON.stringify(content)} />)
+            })}
+
 
 
         </>

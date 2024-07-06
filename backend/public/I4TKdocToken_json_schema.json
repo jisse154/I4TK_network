@@ -20,7 +20,7 @@
             "description": "progremmme name"
         },
         "category": {
-            "type": "string",
+            "type": "array",
             "description": "category relative to the content"
         }
     }

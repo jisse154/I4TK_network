@@ -3,6 +3,7 @@
     "version": "0.2.0",
     "configurations": [
 
+
         {
             "name": "Hardhat individual test",
             "type": "node",
@@ -10,8 +11,20 @@
             "console": "integratedTerminal",
             "runtimeExecutable": "npm",
             "runtimeArgs": [
-                "run",
-                "testhh",
+
+                "testhh"
+
+            ]
+        }
+        ,
+        {
+            "name": "Hardhat run script",
+            "type": "node",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "runhh"
             ]
         }
     ]

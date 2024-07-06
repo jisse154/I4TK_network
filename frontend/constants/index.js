@@ -1,9 +1,11 @@
 import { STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR } from "next/dist/lib/constants";
 
-export const I4TKTokenAddress="0x231e2558e9289A42E55690Fe7E47cFcb9F0644d2"   // ---> for SEPOLIA used for test
-export const I4TKnetworkAddress="0xd53Cf7Cbe36a7E78d841cF7E9b2b50Dc36Cc9F76"  // ---> for SEPOLIA used for test
+//export const I4TKTokenAddress="0x231e2558e9289A42E55690Fe7E47cFcb9F0644d2"   // ---> for SEPOLIA used for test
+export const I4TKTokenAddress="0x5FbDB2315678afecb367f032d93F642f64180aa3"   //--> hardhat
+//export const I4TKnetworkAddress="0xd53Cf7Cbe36a7E78d841cF7E9b2b50Dc36Cc9F76"  // ---> for SEPOLIA used for test
+export const I4TKnetworkAddress="0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"  //--> hardhat
 export const contractAddress="0xA275c5e94f0A49bF61268B171C12f754063A3024"  // ---> for SEPOLIA (vote not strated) 
-export const I4TKnetworkABI= [
+export const I4TKnetworkABI=  [
   {
     "inputs": [
       {
@@ -156,15 +158,27 @@ export const I4TKnetworkABI= [
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "_addr",
+        "name": "addr",
         "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "tokenURI",
+        "type": "string"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "_tokenID",
+        "name": "date",
         "type": "uint256"
       }
     ],
@@ -175,15 +189,15 @@ export const I4TKnetworkABI= [
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "_addr",
+        "name": "addr",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
-        "name": "_tokenID",
+        "name": "tokenID",
         "type": "uint256"
       }
     ],
@@ -196,13 +210,13 @@ export const I4TKnetworkABI= [
       {
         "indexed": false,
         "internalType": "address",
-        "name": "_addr",
+        "name": "addr",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "enum I4TKNetwork.Profiles",
-        "name": "_profile",
+        "name": "profile",
         "type": "uint8"
       }
     ],
@@ -272,7 +286,7 @@ export const I4TKnetworkABI= [
     "name": "Members",
     "outputs": [
       {
-        "internalType": "uint8",
+        "internalType": "enum I4TKNetwork.Profiles",
         "name": "profile",
         "type": "uint8"
       },
@@ -293,6 +307,30 @@ export const I4TKnetworkABI= [
         "internalType": "bytes32",
         "name": "",
         "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenID",
+        "type": "uint256"
+      }
+    ],
+    "name": "contentValidator",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "validatorAddr",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "hasValidated",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -335,6 +373,11 @@ export const I4TKnetworkABI= [
         "internalType": "string",
         "name": "",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "pure",
@@ -344,7 +387,7 @@ export const I4TKnetworkABI= [
     "inputs": [
       {
         "internalType": "string",
-        "name": "_profile",
+        "name": "profile",
         "type": "string"
       }
     ],
@@ -424,7 +467,7 @@ export const I4TKnetworkABI= [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "tokenID",
         "type": "uint256"
       }
     ],
@@ -534,12 +577,12 @@ export const I4TKnetworkABI= [
     "inputs": [
       {
         "internalType": "string",
-        "name": "_tokenURI",
+        "name": "tokenURI",
         "type": "string"
       },
       {
         "internalType": "uint256[]",
-        "name": "_references",
+        "name": "references",
         "type": "uint256[]"
       }
     ],
@@ -552,12 +595,12 @@ export const I4TKnetworkABI= [
     "inputs": [
       {
         "internalType": "address",
-        "name": "_addr",
+        "name": "addr",
         "type": "address"
       },
       {
         "internalType": "enum I4TKNetwork.Profiles",
-        "name": "_profile",
+        "name": "profile",
         "type": "uint8"
       }
     ],
@@ -613,7 +656,7 @@ export const I4TKnetworkABI= [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "tokenID",
         "type": "uint256"
       }
     ],
@@ -664,49 +707,19 @@ export const I4TKnetworkABI= [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_tokenId",
+        "name": "tokenId",
         "type": "uint256"
       }
     ],
-    "name": "validation",
+    "name": "valideContent",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "validator",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "validatorAddr",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "hasValidated",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   }
 ];
-export const I4TKTokenABI= [
+export const I4TKTokenABI=  [
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "defaultAdmin",
-        "type": "address"
-      }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -1027,6 +1040,25 @@ export const I4TKTokenABI= [
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      }
+    ],
+    "name": "tokenCreation",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "DECIMAL",
     "outputs": [
@@ -1163,54 +1195,6 @@ export const I4TKTokenABI= [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "contributions",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "TokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "Weight",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "creator",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       }
@@ -1229,34 +1213,39 @@ export const I4TKTokenABI= [
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
         "internalType": "string",
-        "name": "_CID",
+        "name": "CID",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "_title",
+        "name": "title",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "_authors",
+        "name": "authors",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "_description",
+        "name": "description",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "_programme",
+        "name": "programme",
         "type": "string"
       },
       {
-        "internalType": "string",
-        "name": "_category",
-        "type": "string"
+        "internalType": "string[]",
+        "name": "category",
+        "type": "string[]"
       }
     ],
     "name": "formatTokenURI",
@@ -1267,7 +1256,7 @@ export const I4TKTokenABI= [
         "type": "string"
       }
     ],
-    "stateMutability": "view",
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -1303,6 +1292,25 @@ export const I4TKTokenABI= [
         "internalType": "bytes32",
         "name": "",
         "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTokenCreator",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -1399,6 +1407,19 @@ export const I4TKTokenABI= [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "lastTokenId",
+    "outputs": [
+      {
+        "internalType": "int256",
+        "name": "",
+        "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -1429,34 +1450,6 @@ export const I4TKTokenABI= [
         "type": "uint256"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "ids",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "amounts",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "mintBatch",
-    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },

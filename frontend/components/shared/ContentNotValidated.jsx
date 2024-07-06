@@ -1,7 +1,12 @@
 import React from 'react'
 import { Button } from '../ui/button'
 
-const ContentNotValidated = () => {
+const ContentNotValidated = ({ content }) => {
+
+
+    const contentObj = JSON.parse(content)
+
+
     return (
 
 
@@ -10,14 +15,18 @@ const ContentNotValidated = () => {
                 <a className="block mb-6 overflow-hidden rounded-md" href="#">
                 </a>
                 <div className="mb-4">
-                    <a className="inline-block py-1 px-3 text-xs leading-5 text-green-500 hover:text-green-600 font-medium uppercase bg-green-100 hover:bg-green-200 rounded-full shadow-sm mr-5 " href="#">Technology</a>
-                    <a className="inline-block py-1 px-3 text-xs leading-5 text-green-500 hover:text-green-600 font-medium uppercase bg-green-100 hover:bg-green-200 rounded-full shadow-sm mr-5" href="#">culture</a>
+                    {contentObj.tokenURIJson.properties.category.map((c, index) => {
+                        return (
+                            <a key={index} className="inline-block py-1 px-3 text-xs leading-5 text-green-500 hover:text-green-600 font-medium uppercase bg-green-100 hover:bg-green-200 rounded-full shadow-sm mr-5 " href="#">{c}</a>
+                        );
+                    })}
+
                 </div>
 
-                <a className="inline-block mb-1 text-3xl leading-tight text-coolGray-800 hover:text-coolGray-900 font-bold hover:underline" href="#">Title</a><span className="text-xl ml-5"># Token id</span>
-                <p className="mb-4 text-base font-style: italic md:text-lg text-coolGray-800 font-small">Authors</p>
-                <p className="mb-4 text-base md:text-lg text-Gray-400 font-medium">We&apos;ve all experienced the chaos of multiple spreadsheets, tracking and insight tools, and scrambling for the right data at the right time.</p>
-                <p className="mb-2 text-coolGray-500 font-medium">Posted by 0xabc....c45d • Proposed date: 19 Jan 2022</p>
+                <a className="inline-block mb-1 text-3xl leading-tight text-coolGray-800 hover:text-coolGray-900 font-bold hover:underline" href="#">{contentObj.tokenURIJson.properties.title}</a><span className="text-xl ml-5"># {contentObj.tokenId}</span>
+                <p className="mb-4 text-base font-style: italic md:text-lg text-coolGray-800 font-small">{contentObj.tokenURIJson.properties.authors}</p>
+                <p className="mb-4 text-base md:text-lg text-Gray-400 font-medium">{contentObj.tokenURIJson.properties.description}</p>
+                <p className="mb-2 text-coolGray-500 font-medium">Posted by {contentObj.postedBy.substring(0,6)}....{contentObj.postedBy.slice(-4)} • Proposed date: {contentObj.proposedDate}</p>
                 <div className="flex justify-between">
                     <a className="inline-flex items-center text-base md:text-lg text-green-500 hover:text-green-600 font-semibold" href="#">
                         <span className="mr-3">Download Content</span>

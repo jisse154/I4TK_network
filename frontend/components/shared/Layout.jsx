@@ -18,18 +18,11 @@ const Layout = ({ children }) => {
 
     useEffect(() => {
         setDomLoaded(true);
-        //setIsMember(member[1])
+        //console.log(address);
+
+        //console.log(profile);
+
     }, []);
-
-       // console.log(address);
-       // console.log(member);
-
-        //const [ismember, setIsMember] = useState(true)
-
-
-
-    
-
 
     return (
 
@@ -135,7 +128,7 @@ const Layout = ({ children }) => {
                                             </div>
                                         </a>
                                     </li>
-                                    { profile==2 ? (
+                                    { true ? (
                                         <li>
                                             <a className="p-3 py-4 flex items-center justify-between text-gray-600 hover:text-green-500 hover:bg-gray-800 rounded-md" href="/admin">
                                                 <div className="flex items-center">
