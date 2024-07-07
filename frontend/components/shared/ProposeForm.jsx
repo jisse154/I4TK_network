@@ -6,17 +6,17 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { I4TKnetworkAddress, I4TKnetworkABI, I4TKTokenAddress, I4TKTokenABI } from "@/constants";
 import { useToast } from "@/components/ui/use-toast";
 
-const Page = () => {
+const ProposeForm = () => {
 
     const { address } = useAccount();
     const { toast } = useToast();
 
 
     const categories = [
-        'Categorie 1',
-        'Categorie 2',
-        'Categorie 3',
-        'Categorie 4',
+        'Catégorie 1',
+        'Catégorie 2',
+        'Catégorie 3',
+        'Catégorie 4',
     ];
 
 
@@ -88,7 +88,7 @@ const Page = () => {
 
     };
 
-    const { data: hash, isPending, error, writeContract } = useWriteContract();
+    const { data: hash, isPending,isError, error, writeContract } = useWriteContract();
 
 
     const { data: lastTokenId, isSuccess: isLastTokenidSucess, refetch: refretchLastTokenId } = useReadContract({
@@ -148,8 +148,20 @@ const Page = () => {
         })
 
     useEffect(() => {
-        if (isConfirmed) {
+        if (isConfirming) {
 
+            toast({
+                title: "transaction in progress",
+                description: "tx hash :" + hash ,
+                className: 'bg-orange-200'
+            });
+
+        }
+
+    }, [isConfirming])
+
+    useEffect(() => {
+        if (isConfirmed) {
 
             toast({
                 title: "transaction validated",
@@ -158,14 +170,23 @@ const Page = () => {
             });
 
             cancel();
-
         }
 
     }, [isConfirmed])
 
+    useEffect(() => {
+        if (isError !== undefined && error !== null) {
 
 
+            toast({
+                title: "transaction Error",
+                description: "error :  " + error,
+                className: 'bg-red-500'
+            });
 
+        }
+
+    }, [isError])
 
 
     const cancel = () => {
@@ -241,7 +262,7 @@ const Page = () => {
                                     value={tokenMetadata.tokenDescription}
                                     onChange={handleFormChange}
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    defaultValue={''}
+
                                 />
                             </div>
                         </div>
@@ -413,4 +434,4 @@ const Page = () => {
     )
 }
 
-export default Page
+export default ProposeForm

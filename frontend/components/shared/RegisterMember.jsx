@@ -29,7 +29,7 @@ const RegisterMember = () => {
 
   const { address } = useAccount();
 
-  const [profileStr, setProfileStr] = useState('');
+  const [profileStr, setProfileStr] = useState('researcher');
   const [addr, setAddr] = useState('');
 
 
@@ -37,7 +37,7 @@ const RegisterMember = () => {
   const { toast } = useToast();
 
 
-  const { data: hash, isPending, error, writeContract } = useWriteContract();
+  const { data: hash, isPending, isError, error, writeContract } = useWriteContract();
 
   const { data: _profile, isSuccess, refrech: refrechProfile } = useReadContract(
     {
@@ -79,20 +79,37 @@ const RegisterMember = () => {
   useEffect(() => {
     if (isConfirmed) {
 
-      setAddr('');
-      setProfileStr('');
+
       toast({
         title: "transaction validated",
-        description: "address " + addr + " registered as " + profileStr +" !!",
+        description: "address " + addr + " registered as " + profileStr + " !!",
         className: 'bg-green-600'
       });
+      setAddr('');
+      setProfileStr('researcher');
 
     }
 
   }, [isConfirmed])
 
+
+  useEffect(() => {
+    if (isConfirming) {
+
+      toast({
+        title: "transaction in progress",
+        description: "tx hash :" + hash,
+        className: 'bg-orange-200'
+      });
+
+    }
+
+  }, [isConfirming])
+
   useEffect(() => {
     refrechProfile?.();
+
+    console.log(_profile);
 
 
   }, [profileStr]);

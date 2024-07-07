@@ -9,7 +9,7 @@ import {
 
 import RegisterMember from "@/components/shared/RegisterMember";
 import RevokeMember from "@/components/shared/RevokeMember";
-import NotAdmin from "@/components/shared/NotAdmin";
+import NotAuthorized from "@/components/shared/NotAuthorized";
 import { useState, useEffect } from "react";
 import { useAppContext } from "@/contexts/appContext";
 import { I4TKnetworkABI } from "@/constants";
@@ -26,9 +26,6 @@ const page = () => {
     } = useAppContext();
 
     const [openTab, setOpenTab] = useState("New_Member");
-
-    
-
 
     return (
         <>
@@ -55,7 +52,7 @@ const page = () => {
 
                 </Tabs>
             </>) : (
-                <NotAdmin/>
+                <NotAuthorized/>
             )
 
         }

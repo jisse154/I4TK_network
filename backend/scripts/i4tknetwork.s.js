@@ -1634,7 +1634,7 @@ async function main() {
 
     
 
-  const  [deployer, addr1, addr2 ]= await hre.ethers.getSigners();
+  const  [deployer, addr1, addr2, addr3, addr4, addr5 ]= await hre.ethers.getSigners();
 
 
   console.log(
@@ -1686,6 +1686,18 @@ async function main() {
   const tx4= await  contractdeployed.registerMember(addr2.address,"2");
 
   await tx4.wait();
+
+  const tx5= await  contractdeployed.registerMember(addr3.address,"2");
+
+  await tx5.wait();
+
+  const tx6= await  contractdeployed.registerMember(addr4.address,"2");
+
+  await tx6.wait();
+
+  const tx7= await  contractdeployed.registerMember(addr5.address,"2");
+
+  await tx7.wait();
 
 
 

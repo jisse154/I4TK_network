@@ -160,13 +160,13 @@ export const I4TKnetworkABI=  [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "addr",
+        "name": "creator",
         "type": "address"
       },
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "tokenID",
+        "name": "tokenId",
         "type": "uint256"
       },
       {
@@ -191,13 +191,44 @@ export const I4TKnetworkABI=  [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "addr",
+        "name": "creator",
         "type": "address"
       },
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "tokenID",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "tokenURI",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "date",
+        "type": "uint256"
+      }
+    ],
+    "name": "contentPublished",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "validator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
         "type": "uint256"
       }
     ],
@@ -316,20 +347,20 @@ export const I4TKnetworkABI=  [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenID",
+        "name": "tokenId",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
       }
     ],
     "name": "contentValidator",
     "outputs": [
       {
-        "internalType": "address",
-        "name": "validatorAddr",
-        "type": "address"
-      },
-      {
         "internalType": "bool",
-        "name": "hasValidated",
+        "name": "",
         "type": "bool"
       }
     ],
@@ -467,7 +498,7 @@ export const I4TKnetworkABI=  [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenID",
+        "name": "tokenId",
         "type": "uint256"
       }
     ],
@@ -656,7 +687,7 @@ export const I4TKnetworkABI=  [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenID",
+        "name": "tokenId",
         "type": "uint256"
       }
     ],

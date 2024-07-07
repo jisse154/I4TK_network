@@ -33,12 +33,8 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         bool isMember;
     }
 
-    struct Validator {
-        address validatorAddr;
-        bool hasValidated;
-    }
 
-    mapping(uint256 tokenId => Validator) public contentValidator;
+    mapping(uint256 tokenId => mapping( address addr => bool)) public contentValidator;
     mapping(address => MetadataOfMember) public Members;
     mapping(uint256 tokenId => Status) public status;
     mapping(uint256 tokenId => uint256) public nbValidation;
@@ -153,16 +149,14 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
 
     function valideContent(uint256 tokenId) external onlyRole(VALIDATOR_ROLE) {
         require(
-            !contentValidator[tokenId].hasValidated,
+            !contentValidator[tokenId][msg.sender] == true,
             "You have already validated this content"
         );
 
         nbValidation[tokenId]++;
-        Validator memory _validator;
-        _validator.validatorAddr = msg.sender;
-        _validator.hasValidated = true;
 
-        contentValidator[tokenId] = _validator;
+
+        contentValidator[tokenId][msg.sender] = true;
         if (nbValidation[tokenId] == 4) {
             _distribution(tokenId);
             emit contentPublished(

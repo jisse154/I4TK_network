@@ -1,3 +1,6 @@
+import { Base64 } from "js-base64";
+
+
 export const  parseBase64DataURL = (dataURL) => {
     // Vérifier que le format de l'URL est correct
     if (!dataURL.startsWith("data:application/json;base64,")) {
@@ -8,7 +11,7 @@ export const  parseBase64DataURL = (dataURL) => {
     const base64String = dataURL.replace("data:application/json;base64,", "");
 
     // Décoder la chaîne base64 en JSON
-    const jsonString = atob(base64String);
+    const jsonString = Base64.decode(base64String);
 
     // Convertir la chaîne JSON en objet JavaScript
     const jsonObject = JSON.parse(jsonString);
