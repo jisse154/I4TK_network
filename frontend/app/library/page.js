@@ -43,10 +43,7 @@ const page = () => {
                         <div className="border-b border-coolGray-100" />
                     </section>
                 </div>
-                <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0 pr-10">
-                    <a href="/contribute/propose"><button className="inline-block text-lg font-medium text-center focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border-transparent rounded-md shadow-sm h-full w-full border bg-orange-300 text-white hover:bg-orange-600 " type="submit" >Propose A New Content</button> </a>
-                </div>
-
+               
             </div>
             <ContentsPublished />
 
