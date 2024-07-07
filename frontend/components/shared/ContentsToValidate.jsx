@@ -22,7 +22,7 @@ const ContentsToValidate = () => {
         const proposeEvents = await publicClient.getLogs({
             address: I4TKnetworkAddress,
             event: parseAbiItem('event contentProposed(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date)'),
-            fromBlock: 0n,
+            fromBlock: 6265974n,
             toBlock: 'latest'
         });
 
