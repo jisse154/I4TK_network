@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { publicClient } from "@/utils/client"
 
-import ContentNotValidated from "../../components/shared/ContentNotValidated";
+import ContentPost from "./ContentPost";
 import { I4TKnetworkAddress, I4TKnetworkABI } from "@/constants";
 import { parseAbiItem } from "viem";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
@@ -11,7 +11,7 @@ import { parseBase64DataURL, timestampToDateString } from "@/utils/utils";
 
 
 
-const ContentsToValidate = () => {
+const ContentsPublished = () => {
 
     const { address } = useAccount()
     const [events, setEvents] = useState([])
@@ -21,7 +21,7 @@ const ContentsToValidate = () => {
     const getEvents = async () => {
         const proposeEvents = await publicClient.getLogs({
             address: I4TKnetworkAddress,
-            event: parseAbiItem('event contentProposed(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date)'),
+            event: parseAbiItem('event contentPublished(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date)'),
             fromBlock: 0n,
             toBlock: 'latest'
         });
@@ -45,15 +45,20 @@ const ContentsToValidate = () => {
 
         if (events.length !== 0) {
 
+            console.log(events);
+
             console.log(events[0].args.tokenURI)
             const tokenURIJson = parseBase64DataURL(events[0].args.tokenURI);
-
+            console.log(tokenURIJson);
+            let i=0;
             events.map((e) => {
+                console.log(e);
                 const tokenURIJson = parseBase64DataURL(e.args.tokenURI);
                 const postBy = e.args.creator;
                 const dateString = timestampToDateString(Number(e.args.date));
                 const token = Number(e.args.tokenId);
                 setContents((e) => [...e, {tokenId: token, tokenURIJson: tokenURIJson, postedBy: postBy, proposedDate: dateString }])
+                i++;
 
             })
 
@@ -65,7 +70,7 @@ const ContentsToValidate = () => {
         <>
             {contents.map((content, index) => {
                 return(
-                <ContentNotValidated key={index} content={JSON.stringify(content)} />)
+                <ContentPost key={index} content={JSON.stringify(content)} />)
             })}
 
 
@@ -74,4 +79,4 @@ const ContentsToValidate = () => {
     )
 }
 
-export default ContentsToValidate
+export default ContentsPublished

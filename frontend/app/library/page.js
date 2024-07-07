@@ -1,22 +1,31 @@
 'use client'
 
-import { useState } from "react";
-import ContentPost from "@/components/shared/ContentPost";
+import ContentsPublished from "@/components/shared/ContentsPublished";
+import { UseAppContext } from "@/contexts/AppContext";
 
-//import InfiniteScroll from "react-infinite-scroll-component";     // --> https://www.npmjs.com/package/react-infinite-scroll-component?activeTab=readme
 
 const page = () => {
 
+    const {
+        address,
+        isConnected,
+        profile
+
+    } = UseAppContext();
+
+
     return (
         <>
+
+
             <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-                <div className="w-full md:w-4/4 px-4 mb-4 md:mb-0">
+                <div className="w-full md:w-3/4 px-4 mb-4 md:mb-0">
                     <section className="p-8 py-6 bg-gray-500">
                         <div className="flex flex-wrap items-center justify-between pb-4 -mx-2">
                             <div className="w-full md:w-1/2 px-2 mb-4 md:mb-0">
                                 <div className="flex flex-wrap items-end">
                                     <div className="w-auto mr-3">
-                                        <h2 className="text-lg font-semibold text-white">Recent publication</h2>
+                                        <h2 className="text-lg font-semibold text-white">Recent publications</h2>
                                     </div>
                                     <div className="relative bottom-px pb-px w-auto">
                                     </div>
@@ -34,11 +43,14 @@ const page = () => {
                         <div className="border-b border-coolGray-100" />
                     </section>
                 </div>
-            </div>
-            <ContentPost />
-            <ContentPost />
-        </>
+                <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0 pr-10">
+                    <a href="/contribute/propose"><button className="inline-block text-lg font-medium text-center focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border-transparent rounded-md shadow-sm h-full w-full border bg-orange-300 text-white hover:bg-orange-600 " type="submit" >Propose A New Content</button> </a>
+                </div>
 
+            </div>
+            <ContentsPublished />
+
+        </>
     )
 }
 
