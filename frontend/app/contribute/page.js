@@ -1,7 +1,7 @@
 'use client'
 
 import ProposeForm from "@/components/shared/ProposeForm";
-import { useAppContext } from "@/contexts/appContext";
+import { UseAppContext } from "@/contexts/AppContext";
 import NotAuthorized from "@/components/shared/NotAuthorized";
 
 
@@ -13,7 +13,7 @@ const page = () => {
         isConnected,
         profile
 
-    } = useAppContext();
+    } = UseAppContext();
 
  
 

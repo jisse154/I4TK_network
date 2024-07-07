@@ -11,7 +11,7 @@ import RegisterMember from "@/components/shared/RegisterMember";
 import RevokeMember from "@/components/shared/RevokeMember";
 import NotAuthorized from "@/components/shared/NotAuthorized";
 import { useState, useEffect } from "react";
-import { useAppContext } from "@/contexts/appContext";
+import { UseAppContext } from "@/contexts/AppContext";
 import { I4TKnetworkABI } from "@/constants";
 import { useWriteContract } from "wagmi";
 
@@ -23,7 +23,7 @@ const page = () => {
         isConnected,
         profile
 
-    } = useAppContext();
+    } = UseAppContext();
 
     const [openTab, setOpenTab] = useState("New_Member");
 

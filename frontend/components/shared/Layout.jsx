@@ -3,7 +3,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useState, useEffect } from "react";
-import { useAppContext } from "../../contexts/appContext";
+import { UseAppContext } from "../../contexts/AppContext";
 
 
 const Layout = ({ children }) => {
@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
         address,
         profile
 
-    } = useAppContext()
+    } = UseAppContext()
 
     useEffect(() => {
         setDomLoaded(true);
@@ -87,7 +87,7 @@ const Layout = ({ children }) => {
                                             </a>
                                         </li>
                                     </ul>
-                                    <p className="px-8 mb-2 text-xs font-medium text-gray-500 uppercase">Workspace</p>
+                                    {/* <p className="px-8 mb-2 text-xs font-medium text-gray-500 uppercase">Workspace</p>
                                     <ul className="px-4 pb-8">
                                         <li>
                                             <a className="p-3 py-4 flex items-center justify-between text-gray-600 hover:text-green-500 hover:bg-gray-800 rounded-md" href="#">
@@ -111,7 +111,7 @@ const Layout = ({ children }) => {
                                         </li>
                                         <li></li>
                                         <li></li>
-                                    </ul>
+                                    </ul> */}
                                 </div>
                             </div>
                             <div className="relative bg-gray-900 flex-1"></div>

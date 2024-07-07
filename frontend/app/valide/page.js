@@ -3,7 +3,7 @@
 import ContentsToValidate from "@/components/shared/ContentsToValidate";
 import NotAuthorized from "@/components/shared/NotAuthorized";
 
-import { useAppContext } from "@/contexts/appContext";
+import { UseAppContext } from "@/contexts/AppContext";
 
 
 
@@ -14,7 +14,7 @@ const page = () => {
         isConnected,
         profile
 
-    } = useAppContext();
+    } = UseAppContext();
 
  
 

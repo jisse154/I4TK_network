@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 import RainbowKitAndWagmiProvider from "./RainbowKitAndWagmiProvider";
 import Layout from "@/components/shared/Layout";
 
-import { AppContextProvider } from "@/contexts/appContext";
+import { AppContextProvider } from "@/contexts/AppContext";
 
 
 const fontSans = FontSans({
