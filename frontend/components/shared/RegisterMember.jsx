@@ -50,7 +50,7 @@ const RegisterMember = () => {
 
   const register = () => {
 
-    console.log(addr);
+
     if (!isNaN(addr) && isAddress(addr)) {
       writeContract({
         address: I4TKnetworkAddress,

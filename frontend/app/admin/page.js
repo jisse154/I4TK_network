@@ -12,11 +12,10 @@ import RevokeMember from "@/components/shared/RevokeMember";
 import NotAuthorized from "@/components/shared/NotAuthorized";
 import { useState, useEffect } from "react";
 import { UseAppContext } from "@/contexts/AppContext";
-import { I4TKnetworkABI } from "@/constants";
-import { useWriteContract } from "wagmi";
 
 
-const page = () => {
+
+const Page = () => {
 
     const {
         address,
@@ -61,4 +60,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
