@@ -45,21 +45,15 @@ const ContentsPublished = () => {
 
         if (events.length !== 0) {
 
-            console.log(events);
-
-            console.log(events[0].args.tokenURI)
-            const tokenURIJson = parseBase64DataURL(events[0].args.tokenURI);
-            console.log(tokenURIJson);
-            let i=0;
             events.map((e) => {
                 console.log(e);
                 const tokenURIJson = parseBase64DataURL(e.args.tokenURI);
                 const postBy = e.args.creator;
-                const date = new Date(Number(e.args.date));
+                const date = new Date(Number(e.args.date)*1000);
                 const dateString = date.toDateString();
                 const token = Number(e.args.tokenId);
                 setContents((e) => [...e, {tokenId: token, tokenURIJson: tokenURIJson, postedBy: postBy, proposedDate: dateString }])
-                i++;
+            
 
             })
 

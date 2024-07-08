@@ -1,8 +1,10 @@
 const {
   loadFixture
 } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
+
 const { expect } = require("chai");
 require("@nomicfoundation/hardhat-toolbox");
+require("@nomicfoundation/hardhat-ethers");
 const I4TKnetworkJson = require('../artifacts/contracts/i4tKnetwork.sol/I4TKNetwork.json');
 const I4TKtokenJson = require('../artifacts/contracts/I4TKdocToken.sol/I4TKdocToken.json');
 
@@ -20,15 +22,15 @@ describe("I4TK network contract tests", function () {
   async function deployFixture() {
 
 
-    const [deployer, searcher1, searcher2, validator1, validator2, validator3, validator4] = await ethers.getSigners();
+    const [deployer, searcher1, searcher2, validator1, validator2, validator3, validator4] = await hre.ethers.getSigners();
 
 
-    const contractToken = await ethers.getContractFactory("I4TKdocToken");
+    const contractToken = await hre.ethers.getContractFactory("I4TKdocToken");
     const I4TKtoken = await contractToken.deploy();
 
 
-    const contractNetwork= await ethers.getContractFactory("I4TKNetwork");
-    const I4TKnetwork  = await contractNetwork.deploy(I4TKtoken.target);
+    const contractNetwork = await ethers.getContractFactory("I4TKNetwork");
+    const I4TKnetwork = await contractNetwork.deploy(I4TKtoken.target);
 
 
 
@@ -41,61 +43,37 @@ describe("I4TK network contract tests", function () {
 
     const [deployer, searcher1, searcher2, validator1, validator2, validator3, validator4] = await ethers.getSigners();
 
-
-
     const contractToken = await ethers.getContractFactory("I4TKdocToken");
     const I4TKtoken = await contractToken.deploy();
 
-    console.log(
-      `token deployed to ${I4TKtoken.target}`
-    );
+    const contractNetwork = await ethers.getContractFactory("I4TKNetwork");
+    const I4TKnetwork = await contractNetwork.deploy(I4TKtoken.target);
 
-    const contractNetwork= await ethers.getContractFactory("I4TKNetwork");
-    const I4TKnetwork  = await contractNetwork.deploy(I4TKtoken.target);
 
-    console.log(
-      `contract deployed to ${I4TKnetwork .target}`
-    );
-
-    const tokendeployed = new hre.ethers.Contract(I4TKtoken.target, I4KTnetworkABI, deployer);
-    const contractdeployed = new hre.ethers.Contract(I4TKnetwork .target, I4KTtokenABI, deployer);
+    //const tokendeployed = new hre.ethers.Contract(I4TKtoken.target, I4KTnetworkABI, deployer);
+    //const contractdeployed = new hre.ethers.Contract(I4TKnetwork.target, I4KTtokenABI, deployer);
     //const tx = await contractdeployed.registerMember(contract.target,1);
 
-    const minterRole = await tokendeployed.MINTER_ROLE();
+    const minterRole = await I4TKtoken.MINTER_ROLE();
 
-    const tx = await tokendeployed.grantRole(minterRole, contract.target);
 
-    await tx.wait();
+    await I4TKtoken.grantRole(minterRole, I4TKnetwork.target);
 
-    console.log(deployer.address);
 
-    const tx2 = await contractdeployed.registerMember(deployer.address, "3");
+    await I4TKnetwork.registerMember(deployer.address, "3");
 
-    await tx2.wait();
+    await I4TKnetwork.registerMember(searcher1.address, "1");
+    await I4TKnetwork.registerMember(searcher2.address, "1");
 
-    console.log(await contractdeployed.Members(deployer.address));
+    await I4TKnetwork.registerMember(validator1.address, "2");
 
-    const tx3 = await contractdeployed.registerMember(addr1.address, "1");
+    await I4TKnetwork.registerMember(validator2.address, "2");
 
-    await tx3.wait();
+    await I4TKnetwork.registerMember(validator3.address, "2");
 
-    const tx4 = await contractdeployed.registerMember(addr2.address, "2");
+    await I4TKnetwork.registerMember(validator4.address, "2");
 
-    await tx4.wait();
-
-    const tx5 = await contractdeployed.registerMember(addr3.address, "2");
-
-    await tx5.wait();
-
-    const tx6 = await contractdeployed.registerMember(addr4.address, "2");
-
-    await tx6.wait();
-
-    const tx7 = await contractdeployed.registerMember(addr5.address, "2");
-
-    await tx7.wait();
-
-    return { I4TKnetwork , searcher1, searcher2, validator1, validator2, validator3, validator4 };
+    return { I4TKnetwork, deployer, searcher1, searcher2, validator1, validator2, validator3, validator4 };
 
   };
 
@@ -168,14 +146,81 @@ describe("I4TK network contract tests", function () {
       expect(await I4TKnetwork.owner()).to.equal(deployer.address);
     });
 
-   
+
 
   });
 
 
   //-----------------TEST GETTER FUNCTIONS------------------//
 
- 
+  describe("Test contract functions", async function () {
+
+
+ //-----------------test member registration Function------------------//
+    describe("test member registration", async function () {
+
+      it("Should revert if sender not have the ADMIN_role", async function () {
+        const { I4TKnetwork, deployer, searcher1, searcher2, validator1, validator2, validator3, validator4 } = await loadFixture(defaultFixture);
+        await expect(I4TKnetwork.connect(searcher1).registerMember(searcher2.address, 1)).to.be.revertedWithCustomError(I4TKnetwork, 'AccessControlUnauthorizedAccount').withArgs(searcher1.address, await I4TKnetwork.ADMIN_ROLE());
+      });
+
+      it("Should revert if profile is not in Profiles enum", async function () {
+        const { I4TKnetwork, deployer, searcher1, searcher2, validator1, validator2, validator3, validator4 } = await loadFixture(defaultFixture);
+        await expect(I4TKnetwork.connect(deployer).registerMember(searcher2.address, 4)).to.be.revertedWithoutReason();
+      });
+
+      it("Should revert if profile is 0 (publicUSer)", async function () {
+        const { I4TKnetwork, deployer, searcher1, searcher2, validator1, validator2, validator3, validator4 } = await loadFixture(defaultFixture);
+        await expect(I4TKnetwork.connect(deployer).registerMember(searcher2.address, 0)).to.be.revertedWith("Profile name not recognized!");
+      });
+
+      it("Should grant CONTRIBUTOR_ROLE if Profiles.researcher provided", async function () {
+        const { I4TKnetwork, deployer, searcher1, searcher2, validator1, validator2, validator3, validator4 } = await loadFixture(defaultFixture);
+
+        await I4TKnetwork.connect(deployer).registerMember(searcher2.address, 1);
+        const CONTRIBUTOR_ROLE= await I4TKnetwork.CONTRIBUTOR_ROLE();
+        expect(await I4TKnetwork.connect(deployer).hasRole(CONTRIBUTOR_ROLE,searcher2.address)).to.equal(true);
+      });
+
+      it("Should grant CONTRIBUTOR_ROLE if Profiles.labs provided", async function () {
+        const { I4TKnetwork, deployer, searcher1, searcher2, validator1, validator2, validator3, validator4 } = await loadFixture(defaultFixture);
+
+        await I4TKnetwork.connect(deployer).registerMember(searcher2.address, 2);
+        const CONTRIBUTOR_ROLE= await I4TKnetwork.CONTRIBUTOR_ROLE();
+        expect(await I4TKnetwork.connect(deployer).hasRole(CONTRIBUTOR_ROLE,searcher2.address)).to.equal(true);
+      });
+
+      
+      it("Should grant CONTRIBUTOR_ROLE if Profiles.labs provided", async function () {
+        const { I4TKnetwork, deployer, searcher1, searcher2, validator1, validator2, validator3, validator4 } = await loadFixture(defaultFixture);
+
+        await I4TKnetwork.connect(deployer).registerMember(searcher2.address, 2);
+        const VALIDATOR_ROLE= await I4TKnetwork.CONTRIBUTOR_ROLE();
+        expect(await I4TKnetwork.connect(deployer).hasRole(VALIDATOR_ROLE,searcher2.address)).to.equal(true);
+      });
+
+      it("Should grant ADMIN_ROLE if Profiles.admin provided", async function () {
+        const { I4TKnetwork, deployer, searcher1, searcher2, validator1, validator2, validator3, validator4 } = await loadFixture(defaultFixture);
+
+        await I4TKnetwork.connect(deployer).registerMember(searcher2.address, 3);
+        const ADMIN_ROLE= await I4TKnetwork.CONTRIBUTOR_ROLE();
+        expect(await I4TKnetwork.connect(deployer).hasRole(ADMIN_ROLE,searcher2.address)).to.equal(true);
+      });
+
+      it("Should emit memberRegistered event", async function () {
+        const { I4TKnetwork, deployer, searcher1, searcher2, validator1, validator2, validator3, validator4 } = await loadFixture(defaultFixture);
+
+        await expect(I4TKnetwork.connect(deployer).registerMember(searcher2.address, 3)).to.emit(I4TKnetwork, 'memberRegistered').withArgs(searcher2.address, 3);
+      });
+
+
+    });
+
+
+
+
+  });
+
 
 
   //-----------------TEST PUBLIC STORAGE VARIABLE-------------------//

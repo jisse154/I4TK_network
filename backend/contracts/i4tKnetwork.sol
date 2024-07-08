@@ -177,15 +177,15 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         contribList = token.getcontributions(_tokenId, nbContrib);
 
         for (uint256 i = 0; i < contribList.length; i++) {
-            uint256 tokenIdToSend = contribList[i][0];
+            uint256 sourceTokenId = contribList[i][0];
             address _to;
-            _to = token.getTokenCreator(tokenIdToSend);
-            uint256 _value = (token.balanceOf(address(this), tokenIdToSend) *
+            _to = token.getTokenCreator(sourceTokenId);
+            uint256 _value = (token.balanceOf(address(this), _tokenId) *
                 contribList[i][1]) / 1e6;
             token.safeTransferFrom(
                 address(this),
                 _to,
-                tokenIdToSend,
+                _tokenId,
                 _value,
                 ""
             );
