@@ -1,9 +1,9 @@
 import { STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR } from "next/dist/lib/constants";
 
-export const I4TKTokenAddress="0x431Dc5f0176Cf579Ce2D9A445B953fa9FC75f036"   // ---> for SEPOLIA used for test
-//export const I4TKTokenAddress="0x5FbDB2315678afecb367f032d93F642f64180aa3"   //--> hardhat
-export const I4TKnetworkAddress="0x920800f339FA7b66342368D7ecAf1eEDcE40305E"  // ---> for SEPOLIA used for test
-//export const I4TKnetworkAddress="0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"  //--> hardhat
+//export const I4TKTokenAddress="0x431Dc5f0176Cf579Ce2D9A445B953fa9FC75f036"   // ---> for SEPOLIA used for test
+export const I4TKTokenAddress="0x5FbDB2315678afecb367f032d93F642f64180aa3"   //--> hardhat
+//export const I4TKnetworkAddress="0x920800f339FA7b66342368D7ecAf1eEDcE40305E"  // ---> for SEPOLIA used for test
+export const I4TKnetworkAddress="0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"  //--> hardhat
 
 export const I4TKnetworkABI=  [
   {

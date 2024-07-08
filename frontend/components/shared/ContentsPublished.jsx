@@ -22,7 +22,7 @@ const ContentsPublished = () => {
         const proposeEvents = await publicClient.getLogs({
             address: I4TKnetworkAddress,
             event: parseAbiItem('event contentPublished(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date)'),
-            fromBlock: 6265974n,
+            fromBlock: 0n,
             toBlock: 'latest'
         });
 
@@ -55,7 +55,8 @@ const ContentsPublished = () => {
                 console.log(e);
                 const tokenURIJson = parseBase64DataURL(e.args.tokenURI);
                 const postBy = e.args.creator;
-                const dateString = timestampToDateString(Number(e.args.date));
+                const date = new Date(Number(e.args.date));
+                const dateString = date.toDateString();
                 const token = Number(e.args.tokenId);
                 setContents((e) => [...e, {tokenId: token, tokenURIJson: tokenURIJson, postedBy: postBy, proposedDate: dateString }])
                 i++;
