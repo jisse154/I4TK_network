@@ -9,7 +9,7 @@ import "./I4TKdocToken.sol";
 
 contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
     enum Profiles {
-        publicUSer,
+        publicUser,
         researcher,
         labs,
         admin
@@ -33,13 +33,15 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         bool isMember;
     }
 
-
-    mapping(uint256 tokenId => mapping( address addr => bool)) public contentValidator;
+    mapping(uint256 tokenId => mapping(address addr => bool)) public contentValidator;
     mapping(address => MetadataOfMember) public Members;
     mapping(uint256 tokenId => Status) public status;
     mapping(uint256 tokenId => uint256) public nbValidation;
 
+    error tokenInReferenceNotExistOrNotValidated(uint256 wrongTokenId);
+
     event memberRegistered(address addr, Profiles profile);
+    event memberRevoked(address addr);
     event contentProposed(
         address indexed creator,
         uint256 indexed tokenId,
@@ -71,18 +73,18 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
             super.supportsInterface(interfaceId));
     }
 
-    function getProfilesKeys()
-        public
-        pure
-        returns (string memory, string memory, string memory, string memory)
-    {
-        return ("publicUser", "researcher", "labs", "admin");
-    }
+    // function getProfilesKeys()
+    //     public
+    //     pure
+    //     returns (string memory, string memory, string memory, string memory)
+    // {
+    //     return ("publicUser", "researcher", "labs", "admin");
+    // }
 
     function getProfilesKeyByValue(
         Profiles profile
     ) public pure returns (string memory) {
-        if (Profiles.publicUSer == profile) return "publicUser";
+        if (Profiles.publicUser == profile) return "publicUser";
         if (Profiles.researcher == profile) return "researcher";
         if (Profiles.labs == profile) return "labs";
         if (Profiles.admin == profile) return "admin";
@@ -93,7 +95,7 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         string memory profile
     ) external pure returns (Profiles) {
         if (keccak256(abi.encodePacked(profile)) == keccak256("publicUser"))
-            return Profiles.publicUSer;
+            return Profiles.publicUser;
         if (keccak256(abi.encodePacked(profile)) == keccak256("researcher"))
             return Profiles.researcher;
         if (keccak256(abi.encodePacked(profile)) == keccak256("labs"))
@@ -133,10 +135,49 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         emit memberRegistered(addr, profile);
     }
 
+    function revokeMember(
+        address addr
+    ) external onlyRole(ADMIN_ROLE) {
+        require(
+          Members[addr].isMember,
+            "Cannot revoke because it is not a member"
+        );
+
+
+        if (Members[addr].profile == Profiles.researcher) {
+            revokeRole(CONTRIBUTOR_ROLE, addr);
+        }
+
+        if (Members[addr].profile == Profiles.labs) {
+            revokeRole(CONTRIBUTOR_ROLE, addr);
+            revokeRole(VALIDATOR_ROLE, addr);
+        }
+
+        if (Members[addr].profile== Profiles.admin) {
+            revokeRole(ADMIN_ROLE, addr);
+        }
+
+        Members[addr].profile = Profiles.publicUser;
+        Members[addr].isMember = false;
+
+        emit memberRevoked(addr);
+    }
+
     function proposeContent(
         string memory tokenURI,
         uint256[] memory references
     ) external onlyRole(CONTRIBUTOR_ROLE) {
+        for (uint256 i = 0; i < references.length; i++) {
+            if (
+                token.exists(references[i]) == false ||
+                status[references[i]] != Status.validated
+            ) {
+                revert tokenInReferenceNotExistOrNotValidated({
+                    wrongTokenId: references[i]
+                });
+            }
+        }
+
         bytes memory data;
         address creator;
         creator = msg.sender;
@@ -152,13 +193,18 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
             !contentValidator[tokenId][msg.sender] == true,
             "You have already validated this content"
         );
+        require(
+            token.getTokenCreator(tokenId) != msg.sender,
+            "You are the creator of the content, you cannot validate it!"
+        );
 
         nbValidation[tokenId]++;
 
-
         contentValidator[tokenId][msg.sender] = true;
+
         if (nbValidation[tokenId] == 4) {
             _distribution(tokenId);
+            status[tokenId] = Status.validated;
             emit contentPublished(
                 token.getTokenCreator(tokenId),
                 tokenId,
@@ -172,23 +218,25 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
 
     function _distribution(uint _tokenId) private onlyRole(VALIDATOR_ROLE) {
         uint256 nbContrib = token.getLengthContrib(_tokenId);
-
+        address _to;
         uint256[2][] memory contribList = new uint256[2][](nbContrib);
-        contribList = token.getcontributions(_tokenId, nbContrib);
+        contribList = token.getcontributions(_tokenId);
+        uint256 qtyTokenInContractBeforeDistribution = token.balanceOf(address(this),_tokenId);
 
         for (uint256 i = 0; i < contribList.length; i++) {
             uint256 sourceTokenId = contribList[i][0];
-            address _to;
+            
             _to = token.getTokenCreator(sourceTokenId);
-            uint256 _value = (token.balanceOf(address(this), _tokenId) *
+            uint256 _value = (qtyTokenInContractBeforeDistribution *
                 contribList[i][1]) / 1e6;
-            token.safeTransferFrom(
-                address(this),
-                _to,
-                _tokenId,
-                _value,
-                ""
-            );
+            token.safeTransferFrom(address(this), _to, _tokenId, _value, "");
+        }
+
+        uint256 balanceContractTokenId = token.balanceOf(address(this), _tokenId);
+        _to = token.getTokenCreator(_tokenId);
+
+        if (balanceContractTokenId>0) {
+            token.safeTransferFrom(address(this), _to, _tokenId, balanceContractTokenId, "");
         }
     }
     //function trashEmpty()

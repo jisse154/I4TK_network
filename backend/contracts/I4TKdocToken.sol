@@ -18,14 +18,12 @@ contract I4TKdocToken is
     ERC1155Burnable,
     ERC1155Supply
 {
-    
     using JsonWriter for JsonWriter.Json;
 
-
-    
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     uint256 public constant DECIMAL = 6;
-    uint256 public constant tokenMaxSupply=100*1e6;
+    uint256 public constant TOKEN_MAX_SUPPLY = 100 * 1e6;
+    uint256 public constant CREATOR_MIN_DISTRIBUTION_RATE = 400000;
 
     struct Contribution {
         uint256 TokenId;
@@ -33,20 +31,26 @@ contract I4TKdocToken is
     }
 
     mapping(uint256 => Contribution[]) private _contributions;
+    mapping(uint256 => uint256[]) private _tokenIdReferences;
     mapping(uint256 => address) private _creator;
 
     uint256 private _tokenIdCounter;
-    int256 public lastTokenId= -1;
+    int256 public lastTokenId = -1;
 
-    event tokenCreation (uint256 tokenId, address creator);
+    event tokenCreation(uint256 tokenId, address creator);
 
     constructor() ERC1155("") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        //_grantRole(MINTER_ROLE, minter);
     }
 
     function getTokenCreator(uint256 tokenId) external view returns (address) {
         return _creator[tokenId];
+    }
+
+    function getTokenIdReferences(
+        uint256 tokenId
+    ) external view returns (uint256[] memory) {
+        return _tokenIdReferences[tokenId];
     }
 
     function uri(
@@ -62,57 +66,66 @@ contract I4TKdocToken is
         bytes memory data
     ) public onlyRole(MINTER_ROLE) returns (uint256) {
         uint256 tokenId = _tokenIdCounter;
-        _mint(account, tokenId, tokenMaxSupply, data);
+        _mint(account, tokenId, TOKEN_MAX_SUPPLY, data);
         ERC1155URIStorage._setURI(tokenId, tokenURI);
+
+        if (references.length != 0) {
+            for (uint256 i = 0; i < references.length; i++) {
+                _tokenIdReferences[tokenId].push(references[i]);
+            }
+        }
+
         _contributionDefinition(tokenId, references);
-        _creator[tokenId]=tx.origin;
-        lastTokenId=int(_tokenIdCounter);
+        _creator[tokenId] = tx.origin;
+        lastTokenId = int(_tokenIdCounter);
         _tokenIdCounter += 1;
-        
+
         emit tokenCreation(tokenId, tx.origin);
 
         return tokenId;
-
     }
-
-  
 
     function _contributionDefinition(
         uint256 _tokenId,
         uint256[] memory _references
     ) internal virtual {
-        
         Contribution memory tokenIdContrib;
 
         if (_references.length == 0) {
             tokenIdContrib = Contribution(_tokenId, 1 * 1e6);
             _contributions[_tokenId].push(tokenIdContrib);
         } else {
-            tokenIdContrib = Contribution(_tokenId, 0.4 * 1e6);
+            tokenIdContrib = Contribution(
+                _tokenId,
+                CREATOR_MIN_DISTRIBUTION_RATE
+            );
 
             _contributions[_tokenId].push(tokenIdContrib);
-            
 
             uint256 nbOfRef = _references.length;
 
             for (uint256 i = 0; i < nbOfRef; i++) {
                 uint256 refTokenID = _references[i];
 
-                for (uint256 y = 0; y < _contributions[refTokenID].length; y++) {
+                for (
+                    uint256 y = 0;
+                    y < _contributions[refTokenID].length;
+                    y++
+                ) {
                     Contribution memory Contrib = Contribution(
                         _contributions[refTokenID][y].TokenId,
-                        _contributions[refTokenID][y].Weight * 3 / 5 /nbOfRef
+                        (_contributions[refTokenID][y].Weight *
+                            (1e6 - CREATOR_MIN_DISTRIBUTION_RATE)) /
+                            1e6 /
+                            nbOfRef
                     );
                     _contributions[_tokenId].push(Contrib);
-                    
                 }
             }
-
         }
     }
 
-
-     function formatTokenURI(
+    function formatTokenURI(
         uint256 tokenId,
         string memory CID,
         string memory title,
@@ -121,25 +134,31 @@ contract I4TKdocToken is
         string memory programme,
         string[] memory category
     ) public pure returns (string memory) {
-
-        string memory _name = string(abi.encodePacked('I4TK document Token # ', Strings.toString(tokenId)));
-        string memory _contentURI = string(abi.encodePacked('ipfs://', CID));
+        string memory _name = string(
+            abi.encodePacked(
+                "I4TK document Token # ",
+                Strings.toString(tokenId)
+            )
+        );
+        string memory _contentURI = string(abi.encodePacked("ipfs://", CID));
 
         JsonWriter.Json memory writer;
 
         writer = writer.writeStartObject();
         writer = writer.writeStringProperty("name", _name);
-        writer = writer.writeStringProperty("description", "A content proposed by a member of the I4KT network community");
-        writer = writer.writeStringProperty("contentURI",_contentURI);
+        writer = writer.writeStringProperty(
+            "description",
+            "Token representing a content proposed by a member of the I4KT network community"
+        );
+        writer = writer.writeStringProperty("contentURI", _contentURI);
         writer = writer.writeStartObject("properties");
-        writer = writer.writeStringProperty("title",title);
-        writer = writer.writeStringProperty("authors",authors);
-        writer = writer.writeStringProperty("description",description);
-        writer = writer.writeStringProperty("programme",programme);
+        writer = writer.writeStringProperty("title", title);
+        writer = writer.writeStringProperty("authors", authors);
+        writer = writer.writeStringProperty("description", description);
+        writer = writer.writeStringProperty("programme", programme);
         writer = writer.writeStartArray("category");
-        for (uint i=0; i< category.length; i++) {
+        for (uint i = 0; i < category.length; i++) {
             writer = writer.writeStringValue(category[i]);
-
         }
         writer = writer.writeEndArray();
         writer = writer.writeEndObject();
@@ -149,32 +168,27 @@ contract I4TKdocToken is
             string(
                 abi.encodePacked(
                     "data:application/json;base64,",
-                    Base64.encode(
-                        bytes(
-                            abi.encodePacked( writer.value )
-                        )
-                    )
+                    Base64.encode(bytes(abi.encodePacked(writer.value)))
                 )
             );
     }
 
+    function getcontributions(
+        uint256 tokenId
+    ) external view returns (uint256[2][] memory) {
+        uint256 size = _contributions[tokenId].length;
 
-
-    function getcontributions(uint256 tokenId, uint256 size) external view returns(uint256[2][] memory) {
-        
-        uint256[2][] memory _result =new uint256[2][](size);
-        for( uint256 i =0; i < _contributions[tokenId].length; i++) {
-
+        uint256[2][] memory _result = new uint256[2][](size);
+        for (uint256 i = 0; i < _contributions[tokenId].length; i++) {
             //_result.push([contributions[tokenId][i].TokenId,contributions[tokenId][i].Weight]);
-                _result[i][0]=_contributions[tokenId][i].TokenId;
-                _result[i][1]=_contributions[tokenId][i].Weight;
+            _result[i][0] = _contributions[tokenId][i].TokenId;
+            _result[i][1] = _contributions[tokenId][i].Weight;
         }
 
         return _result;
-
     }
 
-        function getLengthContrib ( uint256 tokenId) external view returns (uint256) {
+    function getLengthContrib(uint256 tokenId) external view returns (uint256) {
         return _contributions[tokenId].length;
     }
 
@@ -194,7 +208,4 @@ contract I4TKdocToken is
     ) public view override(ERC1155, AccessControl) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
-
-
-
 }
