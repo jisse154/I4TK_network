@@ -35,6 +35,7 @@ const ProposeForm = () => {
 
     // Fonction pour ajouter une ligne à la table
     const addRow = () => {
+        
         event.preventDefault(); // Empêcher le rechargement de la page
         const { token, title, CID } = inputValues;
         console.log(token);

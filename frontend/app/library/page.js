@@ -19,7 +19,7 @@ const page = () => {
 
 
             <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-                <div className="w-full md:w-3/4 px-4 mb-4 md:mb-0">
+                <div className="w-full md:w-4/4 px-4 mb-4 md:mb-0">
                     <section className="p-8 py-6 bg-gray-500">
                         <div className="flex flex-wrap items-center justify-between pb-4 -mx-2">
                             <div className="w-full md:w-1/2 px-2 mb-4 md:mb-0">

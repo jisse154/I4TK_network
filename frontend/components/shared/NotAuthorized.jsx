@@ -8,7 +8,7 @@ const NotAuthorized = () => {
             <Terminal className="h-4 w-4" />
             <AlertTitle>Warning</AlertTitle>
             <AlertDescription>
-                You are not authorized!
+                You are not authorized! Please contract the administrator.
             </AlertDescription>
         </Alert>
     </div>

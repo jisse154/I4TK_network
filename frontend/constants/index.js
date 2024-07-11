@@ -61,6 +61,17 @@ export const I4TKnetworkABI=  [
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "wrongTokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokenInReferenceNotExistOrNotValidated",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -255,6 +266,19 @@ export const I4TKnetworkABI=  [
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "memberRevoked",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "ADMIN_ROLE",
     "outputs": [
@@ -377,34 +401,6 @@ export const I4TKnetworkABI=  [
     ],
     "name": "getProfilesKeyByValue",
     "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getProfilesKeys",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      },
       {
         "internalType": "string",
         "name": "",
@@ -661,6 +657,19 @@ export const I4TKnetworkABI=  [
       }
     ],
     "name": "renounceRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "revokeMember",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1091,6 +1100,19 @@ export const I4TKTokenABI=  [
   },
   {
     "inputs": [],
+    "name": "CREATOR_MIN_DISTRIBUTION_RATE",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "DECIMAL",
     "outputs": [
       {
@@ -1123,6 +1145,19 @@ export const I4TKTokenABI=  [
         "internalType": "bytes32",
         "name": "",
         "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "TOKEN_MAX_SUPPLY",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -1353,10 +1388,24 @@ export const I4TKTokenABI=  [
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
-      },
+      }
+    ],
+    "name": "getTokenIdReferences",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "uint256",
-        "name": "size",
+        "name": "tokenId",
         "type": "uint256"
       }
     ],
@@ -1618,19 +1667,6 @@ export const I4TKTokenABI=  [
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "tokenMaxSupply",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
