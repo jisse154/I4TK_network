@@ -2,6 +2,20 @@
 // Compatible with OpenZeppelin Contracts ^5.0.0
 pragma solidity 0.8.24;
 
+
+/// @title I4TKdocToken contract
+/// @author JC SEQUEIRA
+/** @notice This contrat implements an ERC1155 token representing the ownership of contents published by I4TK network community members
+ *  
+ *  
+ */
+/** @dev contract base on openzeppelin ERC1155 contracts
+  * The I4TK network protocol is linked to a ERC1155 token to manage ownership of all content published by community members
+  * Access to the contract functions are manage throught acces to function are managed through access role implemented with AccessControl contre from openzeppelin.
+  * The contract can hold ERC1155 token.
+ */
+/// @custom:context This contract was done as final project in the frame of solidity-dev course taught by ALYRA.
+
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155URIStorage.sol";

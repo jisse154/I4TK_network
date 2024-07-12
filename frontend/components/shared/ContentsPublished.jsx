@@ -19,14 +19,14 @@ const ContentsPublished = () => {
     const [contents, setContents] = useState([])
 
     const getEvents = async () => {
-        const proposeEvents = await publicClient.getLogs({
+        const publishEvents = await publicClient.getLogs({
             address: I4TKnetworkAddress,
             event: parseAbiItem('event contentPublished(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date)'),
             fromBlock: 0n,
             toBlock: 'latest'
         });
 
-        setEvents(proposeEvents);
+        setEvents(publishEvents);
     }
 
     useEffect(() => {
@@ -52,7 +52,7 @@ const ContentsPublished = () => {
                 const date = new Date(Number(e.args.date)*1000);
                 const dateString = date.toDateString();
                 const token = Number(e.args.tokenId);
-                setContents((e) => [...e, {tokenId: token, tokenURIJson: tokenURIJson, postedBy: postBy, proposedDate: dateString }])
+                setContents((e) => [...e, {tokenId: token, tokenURIJson: tokenURIJson, postedBy: postBy, publishedDate: dateString }])
             
 
             })

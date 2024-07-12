@@ -1,6 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.24;
 
+/// @title I4TKNetwork contract
+/// @author JC SEQUEIRA
+/** @notice This contrat implements all functions that govern the I4T knownledge Network protocol: a Desci project
+ *  supporting a community of researchers built around UNESCO's Internet for Trust (I4T) guidelines.
+ *  The objective is to animate and structure a DAO around the following functionalities: authentication, peer-review, web of trust and publication.
+ */
+/** @dev All function calls are currently implemented without side effects
+  * The I4TK network protocol is linked to a ERC1155 token to manage ownership of all content published by community members
+  * Access to the contract functions are manage throught acces to function are managed through access role implemented with AccessControl contre from openzeppelin.
+  * The contract can hold ERC1155 token.
+ */
+/// @custom:context This contract was done as final project in the frame of solidity-dev course taught by ALYRA.
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
@@ -8,6 +21,7 @@ import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "./I4TKdocToken.sol";
 
 contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
+
     enum Profiles {
         publicUser,
         researcher,
@@ -28,6 +42,8 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
     bytes32 public constant CONTRIBUTOR_ROLE = keccak256("CONTRIBUTOR_ROLE");
     bytes32 public constant VALIDATOR_ROLE = keccak256("VALIDATOR_ROLE");
 
+    uint256 validationtime
+
     struct MetadataOfMember {
         Profiles profile;
         bool isMember;
@@ -37,6 +53,7 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
     mapping(address => MetadataOfMember) public Members;
     mapping(uint256 tokenId => Status) public status;
     mapping(uint256 tokenId => uint256) public nbValidation;
+    mapping(uint256 tokenId => uint256) proposedDate;
 
     error tokenInReferenceNotExistOrNotValidated(uint256 wrongTokenId);
 
@@ -56,6 +73,9 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         uint256 date
     );
 
+    /**  @dev At contract creation, the addess of the token I4TKdocToken is set
+      *  the deployer is granted with ADMIN_ROLE
+     */
     constructor(address _I4TKdocTokenAddr) Ownable(msg.sender) {
         I4TKdocTokenAddr = _I4TKdocTokenAddr;
         token = I4TKdocToken(I4TKdocTokenAddr);
@@ -73,14 +93,11 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
             super.supportsInterface(interfaceId));
     }
 
-    // function getProfilesKeys()
-    //     public
-    //     pure
-    //     returns (string memory, string memory, string memory, string memory)
-    // {
-    //     return ("publicUser", "researcher", "labs", "admin");
-    // }
 
+    /// @notice get the key of the Profiles Struct 
+    /// @dev simple getter
+    /// @param profile struct 
+    /// @return string corresponding to key of the struct value given in @param
     function getProfilesKeyByValue(
         Profiles profile
     ) public pure returns (string memory) {
@@ -91,6 +108,10 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         return "";
     }
 
+    /// @notice get the value of the Profiles Struct 
+    /// @dev simple getter
+    /// @param profile string representing a Profiles value
+    /// @return value of Profiles struct corresponding to the key given in @param
     function getProfilesValueByKey(
         string memory profile
     ) external pure returns (Profiles) {
@@ -105,6 +126,13 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         revert();
     }
 
+    /// @notice Register a new member and grant access role according to the user profiles provided
+    /** @dev function can be called only by user having ADMIN_ROLE
+      * emit a {memberRegistered} event.
+     */
+    /// @param addr address of the user
+    /// @param profile profile value to be given to the user
+    
     function registerMember(
         address addr,
         Profiles profile
@@ -135,6 +163,12 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         emit memberRegistered(addr, profile);
     }
 
+    /// @notice revoke member from the community
+    /** @dev function can be called only by user having ADMIN_ROLE
+      * emit a {memberRevoked} event.
+     */
+    /// @param addr address of the user to revoke
+
     function revokeMember(
         address addr
     ) external onlyRole(ADMIN_ROLE) {
@@ -163,6 +197,17 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         emit memberRevoked(addr);
     }
 
+
+    /// @notice Function allowing a member to propose a new content to the community
+    /** @dev function can be called only by user having CONTRIBUTOR_ROLE
+      * by this function a new id of the token I4TKdocToken will be minted and deposit in this contract.
+      * function will revert if a token list in the reference doesn't exist allready.
+      * Pay attention to provide the tokenURI in the good format.
+      * emit a {contentProposed} event.
+     */
+    /// @param tokenURI URI of the new token created, the tokenURI must be formated thanks to the function formatTokenURI() of the I4TKdocToken contract.
+    /// @param references a array of the existing tokenId referenced in this new content proposed.
+
     function proposeContent(
         string memory tokenURI,
         uint256[] memory references
@@ -177,16 +222,26 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
                 });
             }
         }
-
         bytes memory data;
         address creator;
         creator = msg.sender;
         uint256 tokenId = token.mint(address(this), tokenURI, references, data);
         nbValidation[tokenId] = 0;
         status[tokenId] = Status.proposed;
+        proposedDate[tokenId]=block.timestamp;
 
         emit contentProposed(creator, tokenId, tokenURI, block.timestamp);
     }
+
+
+    /// @notice Function allowing a member to validate a content proposed by another member
+    /** @dev function can be called only by user having VALIDATOR_ROLE
+      * one validator can only valide the content once, the creator of the content cannot validate.
+      * to the fourth validation, the tokens are released and sent to the creator of validated content and the creator of the content in reference. 
+      * The distribution is done according to the protocol rules
+      * emit a {contentValidation} event.
+     */
+    /// @param tokenId id of the token represented the content validated
 
     function valideContent(uint256 tokenId) external onlyRole(VALIDATOR_ROLE) {
         require(
@@ -216,6 +271,9 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
         emit contentValidation(msg.sender, tokenId);
     }
 
+    /// @notice function to distribute the quantity of a tokenId to all content's creators according to their ownership.
+    /// @dev private function. distrirbution done according to the protocol rules
+    /// @param _tokenId id of the token that supply quantity will be distrubuted 
     function _distribution(uint _tokenId) private onlyRole(VALIDATOR_ROLE) {
         uint256 nbContrib = token.getLengthContrib(_tokenId);
         address _to;

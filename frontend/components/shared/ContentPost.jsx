@@ -8,7 +8,7 @@ const ContentPost = ({ content }) => {
 
 
     const link = contentObj.tokenURIJson.contentURI.replace('ipfs://', 'https://ipfs.io/ipfs/')
-    
+
     return (
 
 
@@ -27,7 +27,7 @@ const ContentPost = ({ content }) => {
                 <a className="inline-block mb-1 text-3xl leading-tight text-coolGray-800 hover:text-coolGray-900 font-bold hover:underline" href="#">{contentObj.tokenURIJson.properties.title}</a><span className="text-xl ml-5"># {contentObj.tokenId}</span>
                 <p className="mb-4 text-base font-style: italic md:text-lg text-coolGray-800 font-small">{contentObj.tokenURIJson.properties.authors}</p>
                 <p className="mb-4 text-base md:text-lg text-Gray-400 font-medium">{contentObj.tokenURIJson.properties.description}</p>
-                <p className="mb-2 text-coolGray-500 font-medium">Posted by {contentObj.postedBy.substring(0, 6)}....{contentObj.postedBy.slice(-4)} • Proposed date: {contentObj.proposedDate}</p>
+                <p className="mb-2 text-coolGray-500 font-medium">Posted by {contentObj.postedBy.substring(0, 6)}....{contentObj.postedBy.slice(-4)} • Published date: {contentObj.publishedDate}</p>
                 <div className="flex justify-between">
                     <a className="inline-flex items-center text-base md:text-lg text-green-500 hover:text-green-600 font-semibold" href={link} target="_blank">
                         <span className="mr-3">Download Content</span>
