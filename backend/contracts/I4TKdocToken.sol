@@ -57,22 +57,44 @@ contract I4TKdocToken is
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
+
+    /// @notice get the creator of the tokenid
+    /** @dev simple get function
+     */
+    /// @param tokenId id of token
     function getTokenCreator(uint256 tokenId) external view returns (address) {
         return _creator[tokenId];
     }
 
-    function getTokenIdReferences(
-        uint256 tokenId
-    ) external view returns (uint256[] memory) {
+    /// @notice get the list of references
+    /** @dev simple get function
+     */
+    /// @param tokenId id of token
+    function getTokenIdReferences(uint256 tokenId) external view returns (uint256[] memory) {
         return _tokenIdReferences[tokenId];
     }
 
+
+    /// @notice get the URI
+    /** @dev simple get function
+     */
+    /// @param tokenId id of token
     function uri(
         uint256 tokenId
     ) public view override(ERC1155, ERC1155URIStorage) returns (string memory) {
         return ERC1155URIStorage.uri(tokenId);
     }
 
+
+    /// @notice mint new token token
+    /** @dev mint function can be called only by account with MINTER_ROLE
+      * create un new tokenId
+      * define the contribution of parent tokens
+      */
+    /// @param account address where token are deposite after mint
+    /// @param tokenURI tokenURI 
+    /// @param references array of tokenId referenced
+    /// @param data data passed for contract receiving token
     function mint(
         address account,
         string memory tokenURI,
@@ -98,6 +120,16 @@ contract I4TKdocToken is
 
         return tokenId;
     }
+
+
+    /// @notice calculate the contribution of each token parent
+    /** @dev this contribution is calculated to distribute the token to the content creator according to the following rule
+      * if there is no reference 100% of the token wil be sent to the creator of the content
+      * if there is one or more references, then 40% (defined by the constant CREATOR_MIN_DISTRIBUTION_RATE ) will be sent to the creator
+      * the 60% remaining will be shared with all parent to the root
+      */
+    /// @param _tokenId tokenId 
+    /// @param _references array of tokenId referenced
 
     function _contributionDefinition(
         uint256 _tokenId,
@@ -138,6 +170,18 @@ contract I4TKdocToken is
             }
         }
     }
+
+    /// @notice format the tokenURI to store on-chain
+    /** @dev retrun a  encoded base 64 json file
+      * use of helpfull library JsonWriter
+      */
+    /// @param tokenId id of token
+    /// @param CID IFPS CID of the document
+    /// @param title title of the document
+    /// @param authors list of Authors of the document
+    /// @param description description (abstract) of the document
+    /// @param programme research programme 
+    /// @param category array of categories
 
     function formatTokenURI(
         uint256 tokenId,
@@ -187,6 +231,12 @@ contract I4TKdocToken is
             );
     }
 
+    /// @notice return a array all all contribution of a tokenId
+    /** @dev simple get function
+      * return a array 2 dimmensions, the length is variable 
+      */
+    /// @param tokenId tokenId 
+
     function getcontributions(
         uint256 tokenId
     ) external view returns (uint256[2][] memory) {
@@ -202,12 +252,19 @@ contract I4TKdocToken is
         return _result;
     }
 
+
+    /// @notice return the length of the contributions array for a tokenId
+    /** @dev simple get function
+      * I4TKnetwork contract need to get this information to be able to store in memory the contribution array for token distribution
+      */
+    /// @param tokenId tokenId 
     function getLengthContrib(uint256 tokenId) external view returns (uint256) {
         return _contributions[tokenId].length;
     }
 
+   
+   
     // The following functions are overrides required by Solidity.
-
     function _update(
         address from,
         address to,

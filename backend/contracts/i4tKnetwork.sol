@@ -272,7 +272,9 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
     }
 
     /// @notice function to distribute the quantity of a tokenId to all content's creators according to their ownership.
-    /// @dev private function. distrirbution done according to the protocol rules
+    /*  @dev private function. distrirbution done according to the protocol rules
+     *  the distribution is done according the contribution array got from token contract
+     */
     /// @param _tokenId id of the token that supply quantity will be distrubuted 
     function _distribution(uint _tokenId) private onlyRole(VALIDATOR_ROLE) {
         uint256 nbContrib = token.getLengthContrib(_tokenId);
