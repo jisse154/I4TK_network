@@ -1,27 +1,107 @@
 'use client'
 
 import { useAccount } from "wagmi";
-const stats = [
-  { id: 1, name: 'Transactions every 24 hours', value: '44 million' },
-  { id: 2, name: 'Assets under holding', value: '$119 trillion' },
-  { id: 3, name: 'New users annually', value: '46,000' },
-]
+import { useState, useEffect } from "react";
+import { publicClient } from "@/utils/client"
+import { parseAbiItem } from "viem";
+
+
+import { I4TKnetworkAddress, I4TKnetworkABI, I4TKTokenAddress, I4TKTokenABI } from "@/constants";
+// const stats = [
+//   { id: 1, name: 'Transactions every 24 hours', value: '44 million' },
+//   { id: 2, name: 'Assets under holding', value: '$119 trillion' },
+//   { id: 3, name: 'New users annually', value: '46,000' },
+// ]
 
 export default function Home() {
 
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
+
+  const [eventsPublish, setEventsPublish] = useState([])
+  const [eventsRegister, setEventsRegister] = useState([])
+  const [eventsRevoke, setEventsRevoke] = useState([])
+
+  const [stats, setStats] = useState([])
+
+  const getEventsContentPublished = async () => {
+    const proposeEvents = await publicClient.getLogs({
+      address: I4TKnetworkAddress,
+      event: parseAbiItem('event contentPublished(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date)'),
+      fromBlock: 0n,
+      toBlock: 'latest'
+    });
+
+    setEventsPublish(proposeEvents);
+  }
+
+  const getEventsRegister = async () => {
+    const proposeEvents = await publicClient.getContractEvents({
+      address: I4TKnetworkAddress,
+      abi: I4TKnetworkABI,
+      eventName: 'memberRegistered',
+      fromBlock: 0n,
+      toBlock: 'latest'
+    });
+
+    setEventsRegister(proposeEvents);
+    console.log(proposeEvents);
+  }
+
+  const getEventsRevoke = async () => {
+    const proposeEvents = await publicClient.getLogs({
+      address: I4TKnetworkAddress,
+      event: parseAbiItem('event memberRevoked(address addr)'),
+      fromBlock: 0n,
+      toBlock: 'latest'
+    });
+
+    setEventsRevoke(proposeEvents);
+  }
+
+  useEffect(() => {
+
+    const getAllEvents = async () => {
+      if (address !== 'undefined') {
+        await getEventsContentPublished ();
+        await getEventsRegister ();
+        await getEventsRevoke ();
+      }
+    }
+    getAllEvents();
+
+  }, [])
+
+  useEffect(() => {
+
+    if (eventsPublish !== 'undefined') {
+      setStats([ { id: 1, name: 'Content Validated', value: eventsPublish.length },
+        { id: 2, name: 'Members', value: (eventsRegister.length-eventsRevoke.length) }
+ 
+
+      ]);
+    }
+
+
+  }, [eventsPublish,eventsRegister,eventsRevoke])
+
+
+
+
+
+
+
   return (
     <>
 
       <div>
         <div className="mx-auto max-w-2xl py-24 sm:py-26 lg:py-20">
-          
+
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
               Welcome to I4T knowledge network Library
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              loren
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
@@ -31,7 +111,7 @@ export default function Home() {
                 let's start exploring I4TK contents
               </a>
               <a href="https://sites.google.com/i4tknowledge.net/i4tknowledge2024wd/home" target="_blank" className="text-sm font-semibold leading-6 text-gray-900">
-                Learn more <span aria-hidden="true">→</span>
+                Learn more I4Tk network <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>
@@ -51,7 +131,7 @@ export default function Home() {
       </div>
 
 
-    
+
       <div className="bg-white py-18 sm:py-14">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <dl className="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">

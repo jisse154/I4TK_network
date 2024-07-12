@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { I4TKnetworkAddress, I4TKnetworkABI, I4TKTokenAddress, I4TKTokenABI } from "@/constants";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,7 +21,6 @@ const ProposeForm = () => {
 
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [tokenMetadata, setTokenMetadata] = useState({ tokenId: '', tokenCID: '', tokenTitle: '', tokenDescription: '', tokenAuthors: '', tokenProgramme: '', tokenCategories: [] });
-    //const [URIRequest, setURIRequest] = useState({ tokenId: '', tokenCID: '', tokenTitle: '', tokenDescription: '', tokenAuthors: '', tokenProgramme: '', tokenCategories: [] });
     const [newTokenId, setNewTokenId] = useState();
 
 
@@ -35,7 +33,7 @@ const ProposeForm = () => {
 
     // Fonction pour ajouter une ligne à la table
     const addRow = () => {
-        
+
         event.preventDefault(); // Empêcher le rechargement de la page
         const { token, title, CID } = inputValues;
         console.log(token);
@@ -92,7 +90,7 @@ const ProposeForm = () => {
     const { data: hash, isPending,isError, error, writeContract } = useWriteContract();
 
 
-    const { data: lastTokenId, isSuccess: isLastTokenidSucess, refetch: refretchLastTokenId } = useReadContract({
+    const { data: lastTokenId, isSuccess: isLastTokenidSucess, refetch: refetchLastTokenId } = useReadContract({
         abi: I4TKTokenABI,
         address: I4TKTokenAddress,
         functionName: 'lastTokenId',
@@ -171,6 +169,7 @@ const ProposeForm = () => {
             });
 
             cancel();
+            refetchLastTokenId();
         }
 
     }, [isConfirmed])
