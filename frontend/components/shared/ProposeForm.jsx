@@ -194,7 +194,7 @@ const ProposeForm = () => {
         setRows([]);
         setSelectedCategories([]);
         setTokenMetadata({ tokenId: '', tokenCID: '', tokenTitle: '', tokenDescription: '', tokenAuthors: '', tokenProgramme: '', tokenCategories: [] });
-        refretchLastTokenId()
+        refetchLastTokenId()
 
 
     }

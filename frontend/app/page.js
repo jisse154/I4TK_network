@@ -101,7 +101,7 @@ export default function Home() {
               Welcome to I4T knowledge network Library
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Trusted Library for an Internet for Trust
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
