@@ -7,7 +7,7 @@ import NotAuthorized from "@/components/shared/NotAuthorized";
 
 
 
-const page = () => {
+const Page = () => {
     const {
         address,
         isConnected,
@@ -38,4 +38,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

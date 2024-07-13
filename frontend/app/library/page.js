@@ -4,7 +4,7 @@ import ContentsPublished from "@/components/shared/ContentsPublished";
 import { UseAppContext } from "@/contexts/AppContext";
 
 
-const page = () => {
+const Page = () => {
 
     const {
         address,
@@ -51,4 +51,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

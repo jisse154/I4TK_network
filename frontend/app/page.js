@@ -108,10 +108,10 @@ export default function Home() {
                 href="/library"
                 className="rounded-md bg-green-400 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
               >
-                let's start exploring I4TK contents
+                let&lsquo;s start exploring I4TK contents
               </a>
               <a href="https://sites.google.com/i4tknowledge.net/i4tknowledge2024wd/home" target="_blank" className="text-sm font-semibold leading-6 text-gray-900">
-                Learn more I4Tk network <span aria-hidden="true">→</span>
+                Learn more about I4Tk network <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>

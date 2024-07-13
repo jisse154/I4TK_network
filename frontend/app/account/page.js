@@ -13,7 +13,7 @@ import { parseBase64DataURL, timestampToDateString } from "@/utils/utils";
 
 
 
-const page = () => {
+const Page = () => {
 
     const { address } = useAccount();
 
@@ -184,4 +184,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
