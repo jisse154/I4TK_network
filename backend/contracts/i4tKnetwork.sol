@@ -42,7 +42,7 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
     bytes32 public constant CONTRIBUTOR_ROLE = keccak256("CONTRIBUTOR_ROLE");
     bytes32 public constant VALIDATOR_ROLE = keccak256("VALIDATOR_ROLE");
 
-    uint256 validationtime
+    uint256 validationtime;
 
     struct MetadataOfMember {
         Profiles profile;

@@ -2,6 +2,7 @@ const hre = require("hardhat");
 require("@nomicfoundation/hardhat-ethers");
 require('dotenv').config();
 
+
 async function main() {
 
   const I4TKnetworkabi=  [
@@ -1715,24 +1716,27 @@ async function main() {
     `contract deployed to ${contract.target}`
   );
 
-  const tokendeployed = new hre.ethers.Contract(token.target, I4TKdocTokenABI, deployer);
-  const contractdeployed = new hre.ethers.Contract(contract.target, I4TKnetworkabi, deployer);
+  // const tokendeployed = new hre.ethers.Contract(token.target, I4TKdocTokenABI, deployer);
+  // const contractdeployed = new hre.ethers.Contract(contract.target, I4TKnetworkabi, deployer);
   //const tx = await contractdeployed.registerMember(contract.target,1);
 
-  const minterRole= await tokendeployed.MINTER_ROLE();
-  console.log(minterRole);
 
-  const tx = await tokendeployed.grantRole(minterRole,contract.target);
+  await token.waitForDeployment();
+  await contract.waitForDeployment();  
+  const minterRole= await token.MINTER_ROLE();
+  //console.log(ethers.utils.HexString(minterRole));
+
+  const tx = await token.grantRole(minterRole,contract.target);
 
   await tx.wait();
 
   console.log(deployer.address);
 
-  const tx2= await  contractdeployed.registerMember(deployer.address,"3");
+  const tx2= await  contract.registerMember(deployer.address,"3");
 
   await tx2.wait();
 
-  console.log( await contractdeployed.Members(deployer.address) );
+  console.log( await contract.Members(deployer.address) );
 
 }
 
