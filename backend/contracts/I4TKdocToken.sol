@@ -17,7 +17,6 @@ pragma solidity 0.8.24;
 /// @custom:context This contract was done as final project in the frame of solidity-dev course taught by ALYRA.
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155URIStorage.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -29,7 +28,6 @@ contract I4TKdocToken is
     ERC1155,
     ERC1155URIStorage,
     AccessControl,
-    ERC1155Burnable,
     ERC1155Supply
 {
     using JsonWriter for JsonWriter.Json;
@@ -146,10 +144,7 @@ contract I4TKdocToken is
                 uint256 refTokenID = _references[i];
 
                 for (
-                    uint256 y = 0;
-                    y < _contributions[refTokenID].length;
-                    y++
-                ) {
+                    uint256 y = 0; y < _contributions[refTokenID].length; y++) {
                     Contribution memory Contrib = Contribution(
                         _contributions[refTokenID][y].TokenId,
                         (_contributions[refTokenID][y].Weight *
