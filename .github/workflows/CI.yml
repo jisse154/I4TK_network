@@ -1,10 +1,10 @@
-name: Test Projet2
+name: Test projet Alyra I4TKnetwork
 
 on:
   push:
     branches: [main]
     paths:
-      - '4. Testing/Projet2/**'
+      - 'backend**'
 
 jobs:
   tests:
