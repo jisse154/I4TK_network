@@ -2,9 +2,9 @@ name: Test projet Alyra I4TKnetwork
 
 on:
   push:
-    branches: [main]
+    branches: [main, SEPOLIA]
     paths:
-      - 'backend**'
+      - 'backend/**'
 
 jobs:
   tests:
