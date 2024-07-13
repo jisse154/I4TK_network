@@ -14,13 +14,12 @@ pragma solidity 0.8.24;
  */
 /// @custom:context This contract was done as final project in the frame of solidity-dev course taught by ALYRA.
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "./I4TKdocToken.sol";
 
-contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
+contract I4TKNetwork is AccessControl, ERC1155Holder {
 
     enum Profiles {
         publicUser,
@@ -76,7 +75,7 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
     /**  @dev At contract creation, the addess of the token I4TKdocToken is set
       *  the deployer is granted with ADMIN_ROLE
      */
-    constructor(address _I4TKdocTokenAddr) Ownable(msg.sender) {
+    constructor(address _I4TKdocTokenAddr) {
         I4TKdocTokenAddr = _I4TKdocTokenAddr;
         token = I4TKdocToken(I4TKdocTokenAddr);
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -299,5 +298,6 @@ contract I4TKNetwork is Ownable, AccessControl, ERC1155Holder {
             token.safeTransferFrom(address(this), _to, _tokenId, balanceContractTokenId, "");
         }
     }
-    //function trashEmpty()
+
+
 }

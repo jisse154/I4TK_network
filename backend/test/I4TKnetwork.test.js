@@ -82,11 +82,6 @@ describe("I4TK network contract tests", function () {
   //-----------------TEST DEPLOYMENT-------------------//
   describe("Deployment", function () {
 
-    it("Should set the right owner", async function () {
-      const { I4TKtoken, I4TKnetwork, deployer } = await loadFixture(deployFixture);
-
-      expect(await I4TKnetwork.owner()).to.equal(deployer.address);
-    });
 
     it("Should set the DEFAULT_ADMIN_ROLE to deployer", async function () {
       const { I4TKtoken, I4TKnetwork, deployer } = await loadFixture(deployFixture);

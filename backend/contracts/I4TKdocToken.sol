@@ -16,10 +16,10 @@ pragma solidity 0.8.24;
  */
 /// @custom:context This contract was done as final project in the frame of solidity-dev course taught by ALYRA.
 
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155URIStorage.sol";
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "solidity-json-writer/contracts/JsonWriter.sol";
@@ -75,17 +75,6 @@ contract I4TKdocToken is
     }
 
 
-    /// @notice get the URI
-    /** @dev simple get function
-     */
-    /// @param tokenId id of token
-    function uri(
-        uint256 tokenId
-    ) public view override(ERC1155, ERC1155URIStorage) returns (string memory) {
-        return ERC1155URIStorage.uri(tokenId);
-    }
-
-
     /// @notice mint new token token
     /** @dev mint function can be called only by account with MINTER_ROLE
       * create un new tokenId
@@ -95,6 +84,7 @@ contract I4TKdocToken is
     /// @param tokenURI tokenURI 
     /// @param references array of tokenId referenced
     /// @param data data passed for contract receiving token
+
     function mint(
         address account,
         string memory tokenURI,
@@ -102,7 +92,9 @@ contract I4TKdocToken is
         bytes memory data
     ) public onlyRole(MINTER_ROLE) returns (uint256) {
         uint256 tokenId = _tokenIdCounter;
+
         _mint(account, tokenId, TOKEN_MAX_SUPPLY, data);
+        
         ERC1155URIStorage._setURI(tokenId, tokenURI);
 
         if (references.length != 0) {
@@ -134,7 +126,7 @@ contract I4TKdocToken is
     function _contributionDefinition(
         uint256 _tokenId,
         uint256[] memory _references
-    ) internal virtual {
+    ) internal {
         Contribution memory tokenIdContrib;
 
         if (_references.length == 0) {
@@ -170,6 +162,39 @@ contract I4TKdocToken is
             }
         }
     }
+
+
+    /// @notice return a array all all contribution of a tokenId
+    /** @dev simple get function
+      * return a array 2 dimmensions, the length is variable 
+      */
+    /// @param tokenId tokenId 
+
+    function getcontributions(
+        uint256 tokenId
+    ) external view returns (uint256[2][] memory) {
+        uint256 size = _contributions[tokenId].length;
+
+        uint256[2][] memory _result = new uint256[2][](size);
+        for (uint256 i = 0; i < _contributions[tokenId].length; i++) {
+            //_result.push([contributions[tokenId][i].TokenId,contributions[tokenId][i].Weight]);
+            _result[i][0] = _contributions[tokenId][i].TokenId;
+            _result[i][1] = _contributions[tokenId][i].Weight;
+        }
+
+        return _result;
+    }
+
+
+    /// @notice return the length of the contributions array for a tokenId
+    /** @dev simple get function
+      * I4TKnetwork contract need to get this information to be able to store in memory the contribution array for token distribution
+      */
+    /// @param tokenId tokenId 
+    function getLengthContrib(uint256 tokenId) external view returns (uint256) {
+        return _contributions[tokenId].length;
+    }
+
 
     /// @notice format the tokenURI to store on-chain
     /** @dev retrun a  encoded base 64 json file
@@ -231,39 +256,6 @@ contract I4TKdocToken is
             );
     }
 
-    /// @notice return a array all all contribution of a tokenId
-    /** @dev simple get function
-      * return a array 2 dimmensions, the length is variable 
-      */
-    /// @param tokenId tokenId 
-
-    function getcontributions(
-        uint256 tokenId
-    ) external view returns (uint256[2][] memory) {
-        uint256 size = _contributions[tokenId].length;
-
-        uint256[2][] memory _result = new uint256[2][](size);
-        for (uint256 i = 0; i < _contributions[tokenId].length; i++) {
-            //_result.push([contributions[tokenId][i].TokenId,contributions[tokenId][i].Weight]);
-            _result[i][0] = _contributions[tokenId][i].TokenId;
-            _result[i][1] = _contributions[tokenId][i].Weight;
-        }
-
-        return _result;
-    }
-
-
-    /// @notice return the length of the contributions array for a tokenId
-    /** @dev simple get function
-      * I4TKnetwork contract need to get this information to be able to store in memory the contribution array for token distribution
-      */
-    /// @param tokenId tokenId 
-    function getLengthContrib(uint256 tokenId) external view returns (uint256) {
-        return _contributions[tokenId].length;
-    }
-
-   
-   
     // The following functions are overrides required by Solidity.
     function _update(
         address from,
@@ -278,5 +270,15 @@ contract I4TKdocToken is
         bytes4 interfaceId
     ) public view override(ERC1155, AccessControl) returns (bool) {
         return super.supportsInterface(interfaceId);
+    }
+
+    /// @notice get the URI
+    /** @dev simple get function
+     */
+    /// @param tokenId id of token
+    function uri(
+        uint256 tokenId
+    ) public view override(ERC1155, ERC1155URIStorage) returns (string memory) {
+        return ERC1155URIStorage.uri(tokenId);
     }
 }
