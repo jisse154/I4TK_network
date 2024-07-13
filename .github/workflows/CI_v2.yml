@@ -2,7 +2,7 @@ name: Test I4TKnetwork
 
 on:
   push:
-    branches: [main, SEPOLIA]
+    branches: [main]
     paths:
       - 'backend/**'
 
