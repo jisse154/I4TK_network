@@ -1,14 +1,12 @@
 const {
   loadFixture
 } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
-
+const { ethers } = require("hardhat");
 const { expect } = require("chai");
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomicfoundation/hardhat-ethers");
 const I4TKnetworkJson = require('../artifacts/contracts/i4tKnetwork.sol/I4TKNetwork.json');
 const I4TKtokenJson = require('../artifacts/contracts/I4TKdocToken.sol/I4TKdocToken.json');
-
-
 
 
 const I4KTnetworkABI = I4TKnetworkJson.abi;
@@ -25,7 +23,7 @@ describe("I4TK network contract tests", function () {
     const [deployer, searcher1, searcher2, validator1, validator2, validator3, validator4] = await hre.ethers.getSigners();
 
 
-    const contractToken = await hre.ethers.getContractFactory("I4TKdocToken");
+    const contractToken = await ethers.getContractFactory("I4TKdocToken");
     const I4TKtoken = await contractToken.deploy();
 
 
@@ -49,10 +47,6 @@ describe("I4TK network contract tests", function () {
     const contractNetwork = await ethers.getContractFactory("I4TKNetwork");
     const I4TKnetwork = await contractNetwork.deploy(I4TKtoken.target);
 
-
-    //const tokendeployed = new hre.ethers.Contract(I4TKtoken.target, I4KTnetworkABI, deployer);
-    //const contractdeployed = new hre.ethers.Contract(I4TKnetwork.target, I4KTtokenABI, deployer);
-    //const tx = await contractdeployed.registerMember(contract.target,1);
 
     const minterRole = await I4TKtoken.MINTER_ROLE();
 
@@ -88,7 +82,6 @@ describe("I4TK network contract tests", function () {
       expect(await I4TKtoken.hasRole('0x0000000000000000000000000000000000000000000000000000000000000000', deployer.address)).to.equal(true);
 
     });
-
 
 
   });
