@@ -1,119 +1,85 @@
-'use client'
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+"use client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useWriteContract, useWaitForTransactionReceipt, useAccount, useReadContract } from 'wagmi'
+import { useWriteContract, useWaitForTransactionReceipt, useAccount, useReadContract } from "wagmi";
 import { I4TKnetworkABI, I4TKnetworkAddress } from "@/constants";
-import { isAddress } from 'viem'
-
+import { isAddress } from "viem";
 
 const RegisterMember = () => {
-
-
   const { address } = useAccount();
 
-  const [profileStr, setProfileStr] = useState('researcher');
-  const [addr, setAddr] = useState('');
-
-
+  const [profileStr, setProfileStr] = useState("researcher");
+  const [addr, setAddr] = useState("");
 
   const { toast } = useToast();
 
-
   const { data: hash, isPending, isError, error, writeContract } = useWriteContract();
 
-  const { data: _profile, isSuccess, refetch: refetchProfile } = useReadContract(
-    {
-      abi: I4TKnetworkABI,
-      address: I4TKnetworkAddress,
-      functionName: 'getProfilesValueByKey',
-      args: [profileStr],
-    }
-  )
+  const {
+    data: _profile,
+    isSuccess,
+    refetch: refetchProfile,
+  } = useReadContract({
+    abi: I4TKnetworkABI,
+    address: I4TKnetworkAddress,
+    functionName: "getProfilesValueByKey",
+    args: [profileStr],
+  });
 
   const register = () => {
-
-
     if (!isNaN(addr) && isAddress(addr)) {
       writeContract({
         address: I4TKnetworkAddress,
         abi: I4TKnetworkABI,
-        functionName: 'registerMember',
+        functionName: "registerMember",
         account: address,
-        args: [addr, _profile]
-      })
-
-    }
-    else {
+        args: [addr, _profile],
+      });
+    } else {
       toast({
         title: "Error",
         description: "Please enter a correct address",
-        className: 'bg-red-600'
+        className: "bg-red-600",
       });
     }
-
   };
 
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
-    })
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   useEffect(() => {
     if (isConfirmed) {
-
-
       toast({
         title: "transaction validated",
         description: "address " + addr + " registered as " + profileStr + " !!",
-        className: 'bg-green-600'
+        className: "bg-green-600",
       });
-      setAddr('');
-      setProfileStr('researcher');
-
+      setAddr("");
+      setProfileStr("researcher");
     }
-
-  }, [isConfirmed])
-
+  }, [isConfirmed]);
 
   useEffect(() => {
     if (isConfirming) {
-
       toast({
         title: "transaction in progress",
         description: "tx hash :" + hash,
-        className: 'bg-orange-200'
+        className: "bg-orange-200",
       });
-
     }
-
-  }, [isConfirming])
+  }, [isConfirming]);
 
   useEffect(() => {
     refetchProfile?.();
 
     console.log(_profile);
-
-
   }, [profileStr]);
-
 
   return (
     <Card>
@@ -145,11 +111,10 @@ const RegisterMember = () => {
         </form>
       </CardContent>
       <CardFooter className="flex justify-between">
-
         <Button onClick={register}>Register</Button>
       </CardFooter>
     </Card>
-  )
-}
+  );
+};
 
 export default RegisterMember;
