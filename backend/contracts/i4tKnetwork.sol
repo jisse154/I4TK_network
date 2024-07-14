@@ -14,7 +14,6 @@ pragma solidity 0.8.24;
  */
 /// @custom:context This contract was done as final project in the frame of solidity-dev course taught by ALYRA.
 
-
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "./I4TKdocToken.sol";
