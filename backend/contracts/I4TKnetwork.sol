@@ -54,19 +54,9 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
 
     event memberRegistered(address addr, Profiles profile);
     event memberRevoked(address addr);
-    event contentProposed(
-        address indexed creator,
-        uint256 indexed tokenId,
-        string tokenURI,
-        uint256 date
-    );
+    event contentProposed(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date);
     event contentValidation(address indexed validator, uint256 indexed tokenId);
-    event contentPublished(
-        address indexed creator,
-        uint256 indexed tokenId,
-        string tokenURI,
-        uint256 date
-    );
+    event contentPublished(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date);
 
     /**  @dev At contract creation, the address of the token I4TKdocToken is set
      *  the deployer is granted with ADMIN_ROLE
@@ -80,12 +70,8 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
         _setRoleAdmin(VALIDATOR_ROLE, ADMIN_ROLE);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(AccessControl, ERC1155Holder) returns (bool) {
-        return (AccessControl.supportsInterface(interfaceId) ||
-            ERC1155Holder.supportsInterface(interfaceId) ||
-            super.supportsInterface(interfaceId));
+    function supportsInterface(bytes4 interfaceId) public view override(AccessControl, ERC1155Holder) returns (bool) {
+        return (AccessControl.supportsInterface(interfaceId) || ERC1155Holder.supportsInterface(interfaceId) || super.supportsInterface(interfaceId));
     }
     /// @notice get the value of the Profiles Struct
     /// @dev simple getter
@@ -107,10 +93,7 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
     /// @param profile profile value to be given to the user
 
     function registerMember(address addr, Profiles profile) external onlyRole(ADMIN_ROLE) {
-        require(
-            profile == Profiles.researcher || profile == Profiles.labs || profile == Profiles.admin,
-            "Profile name not recognized!"
-        );
+        require(profile == Profiles.researcher || profile == Profiles.labs || profile == Profiles.admin, "Profile name not recognized!");
 
         if (profile == Profiles.researcher) {
             grantRole(CONTRIBUTOR_ROLE, addr);
@@ -169,10 +152,7 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
     /// @param tokenURI URI of the new token created, the tokenURI must be formatted thanks to the function formatTokenURI() of the I4TKdocToken contract.
     /// @param references a array of the existing tokenId referenced in this new content proposed.
 
-    function proposeContent(
-        string memory tokenURI,
-        uint256[] memory references
-    ) external onlyRole(CONTRIBUTOR_ROLE) {
+    function proposeContent(string memory tokenURI, uint256[] memory references) external onlyRole(CONTRIBUTOR_ROLE) {
         for (uint256 i = 0; i < references.length; i++) {
             if (token.exists(references[i]) == false || status[references[i]] != Status.validated) {
                 revert tokenInReferenceNotExistOrNotValidated({wrongTokenId: references[i]});
@@ -199,14 +179,8 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
     /// @param tokenId id of the token represented the content validated
 
     function valideContent(uint256 tokenId) external onlyRole(VALIDATOR_ROLE) {
-        require(
-            !contentValidator[tokenId][msg.sender] == true,
-            "You have already validated this content"
-        );
-        require(
-            token.getTokenCreator(tokenId) != msg.sender,
-            "You are the creator of the content, you cannot validate it!"
-        );
+        require(!contentValidator[tokenId][msg.sender] == true, "You have already validated this content");
+        require(token.getTokenCreator(tokenId) != msg.sender, "You are the creator of the content, you cannot validate it!");
 
         nbValidation[tokenId]++;
 
@@ -215,12 +189,7 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
         if (nbValidation[tokenId] == 4) {
             _distribution(tokenId);
             status[tokenId] = Status.validated;
-            emit contentPublished(
-                token.getTokenCreator(tokenId),
-                tokenId,
-                token.uri(tokenId),
-                block.timestamp
-            );
+            emit contentPublished(token.getTokenCreator(tokenId), tokenId, token.uri(tokenId), block.timestamp);
         }
 
         emit contentValidation(msg.sender, tokenId);

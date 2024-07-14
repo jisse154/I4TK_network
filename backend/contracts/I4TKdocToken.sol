@@ -131,10 +131,7 @@ contract I4TKdocToken is ERC1155, ERC1155URIStorage, AccessControl, ERC1155Suppl
                 for (uint256 y = 0; y < _contributions[refTokenID].length; y++) {
                     Contribution memory Contrib = Contribution(
                         _contributions[refTokenID][y].TokenId,
-                        (_contributions[refTokenID][y].Weight *
-                            (1e6 - CREATOR_MIN_DISTRIBUTION_RATE)) /
-                            1e6 /
-                            nbOfRef
+                        (_contributions[refTokenID][y].Weight * (1e6 - CREATOR_MIN_DISTRIBUTION_RATE)) / 1e6 / nbOfRef
                     );
                     _contributions[_tokenId].push(Contrib);
                 }
@@ -190,19 +187,14 @@ contract I4TKdocToken is ERC1155, ERC1155URIStorage, AccessControl, ERC1155Suppl
         string memory programme,
         string[] memory category
     ) public pure returns (string memory) {
-        string memory _name = string(
-            abi.encodePacked("I4TK document Token # ", Strings.toString(tokenId))
-        );
+        string memory _name = string(abi.encodePacked("I4TK document Token # ", Strings.toString(tokenId)));
         string memory _contentURI = string(abi.encodePacked("ipfs://", CID));
 
         JsonWriter.Json memory writer;
 
         writer = writer.writeStartObject();
         writer = writer.writeStringProperty("name", _name);
-        writer = writer.writeStringProperty(
-            "description",
-            "Token representing a content proposed by a member of the I4KT network community"
-        );
+        writer = writer.writeStringProperty("description", "Token representing a content proposed by a member of the I4KT network community");
         writer = writer.writeStringProperty("contentURI", _contentURI);
         writer = writer.writeStartObject("properties");
         writer = writer.writeStringProperty("title", title);
@@ -217,28 +209,15 @@ contract I4TKdocToken is ERC1155, ERC1155URIStorage, AccessControl, ERC1155Suppl
         writer = writer.writeEndObject();
         writer = writer.writeEndObject();
 
-        return
-            string(
-                abi.encodePacked(
-                    "data:application/json;base64,",
-                    Base64.encode(bytes(abi.encodePacked(writer.value)))
-                )
-            );
+        return string(abi.encodePacked("data:application/json;base64,", Base64.encode(bytes(abi.encodePacked(writer.value)))));
     }
 
     // The following functions are overrides required by Solidity.
-    function _update(
-        address from,
-        address to,
-        uint256[] memory ids,
-        uint256[] memory values
-    ) internal override(ERC1155, ERC1155Supply) {
+    function _update(address from, address to, uint256[] memory ids, uint256[] memory values) internal override(ERC1155, ERC1155Supply) {
         super._update(from, to, ids, values);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC1155, AccessControl) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view override(ERC1155, AccessControl) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 
@@ -246,9 +225,7 @@ contract I4TKdocToken is ERC1155, ERC1155URIStorage, AccessControl, ERC1155Suppl
     /** @dev simple get function
      */
     /// @param tokenId id of token
-    function uri(
-        uint256 tokenId
-    ) public view override(ERC1155, ERC1155URIStorage) returns (string memory) {
+    function uri(uint256 tokenId) public view override(ERC1155, ERC1155URIStorage) returns (string memory) {
         return ERC1155URIStorage.uri(tokenId);
     }
 }

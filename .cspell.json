@@ -34,7 +34,8 @@
       "sankey",
       "uncensorable",
       "headlessui",
-      "solhint"
+      "solhint",
+      "hookspath"
     ],
     
     "ignorePaths": [

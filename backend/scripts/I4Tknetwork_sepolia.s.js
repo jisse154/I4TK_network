@@ -58,7 +58,7 @@ main()
   });
 
 
-  //command: npx hardhat run scripts/I4Tknetwork_sepolia.s.js  --network sepolia
+  //command: npx hardhat run scripts/I4TKnetwork_sepolia.s.js  --network sepolia
 
   //verify on etherscan TOKEN contract: npx hardhat verify --network sepolia contract_address
 
