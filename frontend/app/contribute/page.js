@@ -1,41 +1,23 @@
-'use client'
+"use client";
 
 import ProposeForm from "@/components/shared/ProposeForm";
 import { UseAppContext } from "@/contexts/AppContext";
 import NotAuthorized from "@/components/shared/NotAuthorized";
 
-
-
-
 const Page = () => {
-    const {
-        address,
-        isConnected,
-        profile
+  const { address, isConnected, profile } = UseAppContext();
 
-    } = UseAppContext();
-
- 
-
-
-    return (
+  return (
+    <>
+      {(profile == 2 || profile == 1) && isConnected ? (
         <>
-
-            {((profile == 2 || profile == 1) && isConnected) ? (
-                <>
-                    
-                    <ProposeForm />
-                </>
-            ) : (
-                <NotAuthorized />
-            )
-
-            }
-
-
-
+          <ProposeForm />
         </>
-    )
-}
+      ) : (
+        <NotAuthorized />
+      )}
+    </>
+  );
+};
 
-export default Page
+export default Page;

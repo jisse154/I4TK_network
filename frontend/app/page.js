@@ -1,10 +1,9 @@
-'use client'
+"use client";
 
 import { useAccount } from "wagmi";
 import { useState, useEffect } from "react";
-import { publicClient } from "@/utils/client"
+import { publicClient } from "@/utils/client";
 import { parseAbiItem } from "viem";
-
 
 import { I4TKnetworkAddress, I4TKnetworkABI, I4TKTokenAddress, I4TKTokenABI } from "@/constants";
 // const stats = [
@@ -14,95 +13,80 @@ import { I4TKnetworkAddress, I4TKnetworkABI, I4TKTokenAddress, I4TKTokenABI } fr
 // ]
 
 export default function Home() {
-
   const { address, isConnected } = useAccount();
 
-  const [eventsPublish, setEventsPublish] = useState([])
-  const [eventsRegister, setEventsRegister] = useState([])
-  const [eventsRevoke, setEventsRevoke] = useState([])
+  const [eventsPublish, setEventsPublish] = useState([]);
+  const [eventsRegister, setEventsRegister] = useState([]);
+  const [eventsRevoke, setEventsRevoke] = useState([]);
 
-  const [stats, setStats] = useState([])
+  const [stats, setStats] = useState([]);
 
   const getEventsContentPublished = async () => {
     const proposeEvents = await publicClient.getLogs({
       address: I4TKnetworkAddress,
-      event: parseAbiItem('event contentPublished(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date)'),
+      event: parseAbiItem(
+        "event contentPublished(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date)",
+      ),
       fromBlock: 0n,
-      toBlock: 'latest'
+      toBlock: "latest",
     });
 
     setEventsPublish(proposeEvents);
-  }
+  };
 
   const getEventsRegister = async () => {
     const proposeEvents = await publicClient.getContractEvents({
       address: I4TKnetworkAddress,
       abi: I4TKnetworkABI,
-      eventName: 'memberRegistered',
+      eventName: "memberRegistered",
       fromBlock: 0n,
-      toBlock: 'latest'
+      toBlock: "latest",
     });
 
     setEventsRegister(proposeEvents);
     console.log(proposeEvents);
-  }
+  };
 
   const getEventsRevoke = async () => {
     const proposeEvents = await publicClient.getLogs({
       address: I4TKnetworkAddress,
-      event: parseAbiItem('event memberRevoked(address addr)'),
+      event: parseAbiItem("event memberRevoked(address addr)"),
       fromBlock: 0n,
-      toBlock: 'latest'
+      toBlock: "latest",
     });
 
     setEventsRevoke(proposeEvents);
-  }
+  };
 
   useEffect(() => {
-
     const getAllEvents = async () => {
-      if (address !== 'undefined') {
-        await getEventsContentPublished ();
-        await getEventsRegister ();
-        await getEventsRevoke ();
+      if (address !== "undefined") {
+        await getEventsContentPublished();
+        await getEventsRegister();
+        await getEventsRevoke();
       }
-    }
+    };
     getAllEvents();
-
-  }, [])
+  }, []);
 
   useEffect(() => {
-
-    if (eventsPublish !== 'undefined') {
-      setStats([ { id: 1, name: 'Content Validated', value: eventsPublish.length },
-        { id: 2, name: 'Members', value: (eventsRegister.length-eventsRevoke.length) }
- 
-
+    if (eventsPublish !== "undefined") {
+      setStats([
+        { id: 1, name: "Content Validated", value: eventsPublish.length },
+        { id: 2, name: "Members", value: eventsRegister.length - eventsRevoke.length },
       ]);
     }
-
-
-  }, [eventsPublish,eventsRegister,eventsRevoke])
-
-
-
-
-
-
+  }, [eventsPublish, eventsRegister, eventsRevoke]);
 
   return (
     <>
-
       <div>
         <div className="mx-auto max-w-2xl py-24 sm:py-26 lg:py-20">
-
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
               Welcome to I4T knowledge network Library
             </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-            Trusted Library for an Internet for Trust
-            </p>
+            <p className="mt-6 text-lg leading-8 text-gray-600">Trusted Library for an Internet for Trust</p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
                 href="/library"
@@ -110,7 +94,11 @@ export default function Home() {
               >
                 let&lsquo;s start exploring I4TK contents
               </a>
-              <a href="https://sites.google.com/i4tknowledge.net/i4tknowledge2024wd/home" target="_blank" className="text-sm font-semibold leading-6 text-gray-900">
+              <a
+                href="https://sites.google.com/i4tknowledge.net/i4tknowledge2024wd/home"
+                target="_blank"
+                className="text-sm font-semibold leading-6 text-gray-900"
+              >
                 Learn more about I4Tk network <span aria-hidden="true">→</span>
               </a>
             </div>
@@ -123,14 +111,12 @@ export default function Home() {
           <div
             style={{
               clipPath:
-                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
             }}
             className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
           />
         </div>
       </div>
-
-
 
       <div className="bg-white py-18 sm:py-14">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -146,8 +132,6 @@ export default function Home() {
           </dl>
         </div>
       </div>
-
     </>
-
   );
 }
