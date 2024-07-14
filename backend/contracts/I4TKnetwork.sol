@@ -87,28 +87,13 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
             ERC1155Holder.supportsInterface(interfaceId) ||
             super.supportsInterface(interfaceId));
     }
-
-    /// @notice get the key of the Profiles Struct
-    /// @dev simple getter
-    /// @param profile struct
-    /// @return string corresponding to key of the struct value given in @param
-    function getProfilesKeyByValue(Profiles profile) public pure returns (string memory) {
-        if (Profiles.publicUser == profile) return "publicUser";
-        if (Profiles.researcher == profile) return "researcher";
-        if (Profiles.labs == profile) return "labs";
-        if (Profiles.admin == profile) return "admin";
-        return "";
-    }
-
     /// @notice get the value of the Profiles Struct
     /// @dev simple getter
     /// @param profile string representing a Profiles value
     /// @return value of Profiles struct corresponding to the key given in @param
     function getProfilesValueByKey(string memory profile) external pure returns (Profiles) {
-        if (keccak256(abi.encodePacked(profile)) == keccak256("publicUser"))
-            return Profiles.publicUser;
-        if (keccak256(abi.encodePacked(profile)) == keccak256("researcher"))
-            return Profiles.researcher;
+        if (keccak256(abi.encodePacked(profile)) == keccak256("publicUser")) return Profiles.publicUser;
+        if (keccak256(abi.encodePacked(profile)) == keccak256("researcher")) return Profiles.researcher;
         if (keccak256(abi.encodePacked(profile)) == keccak256("labs")) return Profiles.labs;
         if (keccak256(abi.encodePacked(profile)) == keccak256("admin")) return Profiles.admin;
         revert();

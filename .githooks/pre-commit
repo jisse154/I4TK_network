@@ -2,7 +2,7 @@
 
 # Check code lint (backend side)
 echo "Checking backend code lint "
-(cd backend && npm run solhint && npx prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol')
+(cd backend && npm run solhint && npm run prettier:solidity )
 LINT_RESULT=$?
 
 if [ $LINT_RESULT -ne 0 ]; then

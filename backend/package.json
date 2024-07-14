@@ -18,6 +18,10 @@
     "testhh": "npx hardhat test",
     "runhh": "hardhat run scripts/I4TKnetwork.s.js  --network localhost",
     "solhint": "./node_modules/.bin/solhint -f table contracts/**/*.sol",
-    "prettier:solidity": "./node_modules/.bin/prettier --write contracts/**/*.sol"
+    "prettier:solidity": "npx prettier --check --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
+    "prettier:solidity:fix": "npx prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol'"
+    
+    
+
   }
 }
