@@ -33,7 +33,8 @@
       "Allbalance",
       "sankey",
       "uncensorable",
-      "headlessui"
+      "headlessui",
+      "solhint"
     ],
     
     "ignorePaths": [

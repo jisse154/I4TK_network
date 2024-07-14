@@ -11,7 +11,7 @@ if [ $LINT_RESULT -ne 0 ]; then
 fi
 
 # Check code lint (frontend side)
-echo "Checking frontend code lint and code spell..."
+echo "Checking frontend code lint "
 (cd frontend && npm run lint:prettier)
 LINT_RESULT=$?
 
@@ -21,7 +21,7 @@ if [ $LINT_RESULT -ne 0 ]; then
 fi
 
 # Check code code spell (backend & frontend side)
-echo "Checking code spell..."
+echo "Checking code spell for backend & frontend..."
 ( npx cspell "**" )
 CSPELL_RESULT=$?
 
