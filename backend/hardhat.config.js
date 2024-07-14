@@ -17,5 +17,5 @@ module.exports = {
   //     chainId: 11155111,
   //     url: process.env.RPC,
   //   },
-  // }
+   }
 };
