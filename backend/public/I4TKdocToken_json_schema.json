@@ -5,11 +5,11 @@
     "properties": {
         "title": {
             "type": "string",
-            "description": "title of the docuement"
+            "description": "title of the document"
         },
         "authors": {
             "type": "array",
-            "description": "The list of the authors of the docuement"
+            "description": "The list of the authors of the document"
         },
         "description": {
             "type": "string",
@@ -17,7 +17,7 @@
         },
         "programme": {
             "type": "string",
-            "description": "progremmme name"
+            "description": "programme name"
         },
         "category": {
             "type": "array",

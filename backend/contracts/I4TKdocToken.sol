@@ -5,13 +5,13 @@ pragma solidity 0.8.24;
 
 /// @title I4TKdocToken contract
 /// @author JC SEQUEIRA
-/** @notice This contrat implements an ERC1155 token representing the ownership of contents published by I4TK network community members
+/** @notice This contract implements an ERC1155 token representing the ownership of contents published by I4TK network community members
  *  
  *  
  */
 /** @dev contract base on openzeppelin ERC1155 contracts
   * The I4TK network protocol is linked to a ERC1155 token to manage ownership of all content published by community members
-  * Access to the contract functions are manage throught acces to function are managed through access role implemented with AccessControl contre from openzeppelin.
+  * Access to the contract functions are manage through access to function are managed through access role implemented with AccessControl contract from openzeppelin.
   * The contract can hold ERC1155 token.
  */
 /// @custom:context This contract was done as final project in the frame of solidity-dev course taught by ALYRA.
@@ -56,7 +56,7 @@ contract I4TKdocToken is
     }
 
 
-    /// @notice get the creator of the tokenid
+    /// @notice get the creator of the tokenId
     /** @dev simple get function
      */
     /// @param tokenId id of token
@@ -78,7 +78,7 @@ contract I4TKdocToken is
       * create un new tokenId
       * define the contribution of parent tokens
       */
-    /// @param account address where token are deposite after mint
+    /// @param account address where token are deposit after mint
     /// @param tokenURI tokenURI 
     /// @param references array of tokenId referenced
     /// @param data data passed for contract receiving token
@@ -161,7 +161,7 @@ contract I4TKdocToken is
 
     /// @notice return a array all all contribution of a tokenId
     /** @dev simple get function
-      * return a array 2 dimmensions, the length is variable 
+      * return a array 2 dimensions, the length is variable 
       */
     /// @param tokenId tokenId 
 
@@ -192,11 +192,11 @@ contract I4TKdocToken is
 
 
     /// @notice format the tokenURI to store on-chain
-    /** @dev retrun a  encoded base 64 json file
-      * use of helpfull library JsonWriter
+    /** @dev return a  encoded base 64 json file
+      * use of helpful library JsonWriter
       */
     /// @param tokenId id of token
-    /// @param CID IFPS CID of the document
+    /// @param CID IPFS CID of the document
     /// @param title title of the document
     /// @param authors list of Authors of the document
     /// @param description description (abstract) of the document

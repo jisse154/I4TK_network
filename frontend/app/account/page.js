@@ -24,22 +24,20 @@ const Page = () => {
     const [networkTotalBalance, setNetworkTotalBalance] = useState();
 
 
-
-
-    const { data: lastTokenId, isSuccess: isLastTokenidSucess } = useReadContract({
+    const { data: lastTokenId, isSuccess: isLastTokenIdSuccess } = useReadContract({
         address: I4TKTokenAddress,
         abi: I4TKTokenABI,
         functionName: 'lastTokenId'
     });
 
-    const { data: totalSupply, isSuccess: totalSupplySucess } = useReadContract({
+    const { data: totalSupply, isSuccess: totalSupplySuccess } = useReadContract({
         address: I4TKTokenAddress,
         abi: I4TKTokenABI,
         functionName: 'totalSupply'
     });
 
 
-    const getbalance = async (_address, _lastTokenId) => {
+    const getBalance = async (_address, _lastTokenId) => {
 
 
 
@@ -84,7 +82,7 @@ const Page = () => {
     useEffect(() => {
         const getAllbalance = async () => {
             if (address !== 'undefined' && lastTokenId !== undefined) {
-                await getbalance(address, lastTokenId);
+                await getBalance(address, lastTokenId);
             }
         }
         getAllbalance();
@@ -99,7 +97,7 @@ const Page = () => {
 
             }
    
-    }, [totalSupplySucess])
+    }, [totalSupplySuccess])
 
     useEffect(() => {
         const getOwnToken = async () => {

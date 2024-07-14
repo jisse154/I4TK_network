@@ -17,7 +17,7 @@ const ContentNotValidated = ({ content }) => {
 
     const { data: hash, isPending, error, isError, writeContract } = useWriteContract();
 
-    const { data: nbValidation, isSuccess: isSuccess, refetch: refretchNbValidation } = useReadContract({
+    const { data: nbValidation, isSuccess: isSuccess, refetch: refetchNbValidation } = useReadContract({
         abi: I4TKnetworkABI,
         address: I4TKnetworkAddress,
         functionName: 'nbValidation',
@@ -66,7 +66,7 @@ const ContentNotValidated = ({ content }) => {
                 className: 'bg-green-600'
             });
 
-            refretchNbValidation();
+            refetchNbValidation();
 
         }
 

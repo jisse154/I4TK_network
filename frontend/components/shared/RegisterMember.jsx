@@ -39,7 +39,7 @@ const RegisterMember = () => {
 
   const { data: hash, isPending, isError, error, writeContract } = useWriteContract();
 
-  const { data: _profile, isSuccess, refrech: refrechProfile } = useReadContract(
+  const { data: _profile, isSuccess, refetch: refetchProfile } = useReadContract(
     {
       abi: I4TKnetworkABI,
       address: I4TKnetworkAddress,
@@ -107,7 +107,7 @@ const RegisterMember = () => {
   }, [isConfirming])
 
   useEffect(() => {
-    refrechProfile?.();
+    refetchProfile?.();
 
     console.log(_profile);
 

@@ -90,7 +90,7 @@ const ProposeForm = () => {
     const { data: hash, isPending,isError, error, writeContract } = useWriteContract();
 
 
-    const { data: lastTokenId, isSuccess: isLastTokenidSucess, refetch: refetchLastTokenId } = useReadContract({
+    const { data: lastTokenId, isSuccess: isLastTokenIdSuccess, refetch: refetchLastTokenId } = useReadContract({
         abi: I4TKTokenABI,
         address: I4TKTokenAddress,
         functionName: 'lastTokenId',
@@ -98,7 +98,7 @@ const ProposeForm = () => {
         account: address,
     });
 
-    const { data: tokenURI, isSuccess: isFormatURISuccess, refetch: refrechtokenURI } = useReadContract({
+    const { data: tokenURI, isSuccess: isFormatURISuccess, refetch: refetchTokenURI } = useReadContract({
         abi: I4TKTokenABI,
         address: I4TKTokenAddress,
         functionName: 'formatTokenURI',
@@ -270,7 +270,7 @@ const ProposeForm = () => {
                         <div className="col-span-full">
                             <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
                                 Authors
-                            </label> <span className="text-sm italic font-small">enter the list of authors seperated by a comma</span>
+                            </label> <span className="text-sm italic font-small">enter the list of authors separated by a comma</span>
                             <div className="mt-2">
                                 <input
                                     type="text"

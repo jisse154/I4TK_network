@@ -5,7 +5,7 @@ const { ethers } = require("hardhat");
 const { expect } = require("chai");
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomicfoundation/hardhat-ethers");
-const I4TKnetworkJson = require('../artifacts/contracts/i4tKnetwork.sol/I4TKNetwork.json');
+const I4TKnetworkJson = require('../artifacts/contracts/I4TKnetwork.sol/I4TKNetwork.json');
 const I4TKtokenJson = require('../artifacts/contracts/I4TKdocToken.sol/I4TKdocToken.json');
 
 
@@ -152,7 +152,7 @@ describe("I4TK network contract tests", function () {
     });
 
     //-----------------test member revoke Function------------------//
-    describe("test member revokation", async function () {
+    describe("test member revoke", async function () {
 
       it("Should revert if sender not have the ADMIN_role", async function () {
         const { I4TKtoken, I4TKnetwork, deployer, searcher1, searcher2, validator1, validator2, validator3, validator4, public } = await loadFixture(defaultFixture);

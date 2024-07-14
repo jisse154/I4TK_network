@@ -1713,4 +1713,4 @@ main()
   });
 
 
-  //commande: npx hardhat run scripts/i4tknetwork.s.js  --network sepolia/localhost
+  //command: npx hardhat run scripts/I4TKnetwork.s.js  --network sepolia/localhost
