@@ -92,7 +92,6 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
             super.supportsInterface(interfaceId));
     }
 
-
     /// @notice get the key of the Profiles Struct 
     /// @dev simple getter
     /// @param profile struct 
