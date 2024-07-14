@@ -2,17 +2,16 @@
 // Compatible with OpenZeppelin Contracts ^5.0.0
 pragma solidity 0.8.24;
 
-
 /// @title I4TKdocToken contract
 /// @author JC SEQUEIRA
 /** @notice This contract implements an ERC1155 token representing the ownership of contents published by I4TK network community members
- *  
- *  
+ *
+ *
  */
 /** @dev contract base on openzeppelin ERC1155 contracts
-  * The I4TK network protocol is linked to a ERC1155 token to manage ownership of all content published by community members
-  * Access to the contract functions are manage through access to function are managed through access role implemented with AccessControl contract from openzeppelin.
-  * The contract can hold ERC1155 token.
+ * The I4TK network protocol is linked to a ERC1155 token to manage ownership of all content published by community members
+ * Access to the contract functions are manage through access to function are managed through access role implemented with AccessControl contract from openzeppelin.
+ * The contract can hold ERC1155 token.
  */
 /// @custom:context This contract was done as final project in the frame of solidity-dev course taught by ALYRA.
 
@@ -24,12 +23,7 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import "solidity-json-writer/contracts/JsonWriter.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract I4TKdocToken is
-    ERC1155,
-    ERC1155URIStorage,
-    AccessControl,
-    ERC1155Supply
-{
+contract I4TKdocToken is ERC1155, ERC1155URIStorage, AccessControl, ERC1155Supply {
     using JsonWriter for JsonWriter.Json;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -55,7 +49,6 @@ contract I4TKdocToken is
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
-
     /// @notice get the creator of the tokenId
     /** @dev simple get function
      */
@@ -72,14 +65,13 @@ contract I4TKdocToken is
         return _tokenIdReferences[tokenId];
     }
 
-
     /// @notice mint new token token
     /** @dev mint function can be called only by account with MINTER_ROLE
-      * create un new tokenId
-      * define the contribution of parent tokens
-      */
+     * create un new tokenId
+     * define the contribution of parent tokens
+     */
     /// @param account address where token are deposit after mint
-    /// @param tokenURI tokenURI 
+    /// @param tokenURI tokenURI
     /// @param references array of tokenId referenced
     /// @param data data passed for contract receiving token
 
@@ -92,7 +84,7 @@ contract I4TKdocToken is
         uint256 tokenId = _tokenIdCounter;
 
         _mint(account, tokenId, TOKEN_MAX_SUPPLY, data);
-        
+
         ERC1155URIStorage._setURI(tokenId, tokenURI);
 
         if (references.length != 0) {
@@ -111,30 +103,23 @@ contract I4TKdocToken is
         return tokenId;
     }
 
-
     /// @notice calculate the contribution of each token parent
     /** @dev this contribution is calculated to distribute the token to the content creator according to the following rule
-      * if there is no reference 100% of the token wil be sent to the creator of the content
-      * if there is one or more references, then 40% (defined by the constant CREATOR_MIN_DISTRIBUTION_RATE ) will be sent to the creator
-      * the 60% remaining will be shared with all parent to the root
-      */
-    /// @param _tokenId tokenId 
+     * if there is no reference 100% of the token wil be sent to the creator of the content
+     * if there is one or more references, then 40% (defined by the constant CREATOR_MIN_DISTRIBUTION_RATE ) will be sent to the creator
+     * the 60% remaining will be shared with all parent to the root
+     */
+    /// @param _tokenId tokenId
     /// @param _references array of tokenId referenced
 
-    function _contributionDefinition(
-        uint256 _tokenId,
-        uint256[] memory _references
-    ) internal {
+    function _contributionDefinition(uint256 _tokenId, uint256[] memory _references) internal {
         Contribution memory tokenIdContrib;
 
         if (_references.length == 0) {
             tokenIdContrib = Contribution(_tokenId, 1 * 1e6);
             _contributions[_tokenId].push(tokenIdContrib);
         } else {
-            tokenIdContrib = Contribution(
-                _tokenId,
-                CREATOR_MIN_DISTRIBUTION_RATE
-            );
+            tokenIdContrib = Contribution(_tokenId, CREATOR_MIN_DISTRIBUTION_RATE);
 
             _contributions[_tokenId].push(tokenIdContrib);
 
@@ -143,8 +128,7 @@ contract I4TKdocToken is
             for (uint256 i = 0; i < nbOfRef; i++) {
                 uint256 refTokenID = _references[i];
 
-                for (
-                    uint256 y = 0; y < _contributions[refTokenID].length; y++) {
+                for (uint256 y = 0; y < _contributions[refTokenID].length; y++) {
                     Contribution memory Contrib = Contribution(
                         _contributions[refTokenID][y].TokenId,
                         (_contributions[refTokenID][y].Weight *
@@ -158,21 +142,17 @@ contract I4TKdocToken is
         }
     }
 
-
     /// @notice return a array all all contribution of a tokenId
     /** @dev simple get function
-      * return a array 2 dimensions, the length is variable 
-      */
-    /// @param tokenId tokenId 
+     * return a array 2 dimensions, the length is variable
+     */
+    /// @param tokenId tokenId
 
-    function getcontributions(
-        uint256 tokenId
-    ) external view returns (uint256[2][] memory) {
+    function getcontributions(uint256 tokenId) external view returns (uint256[2][] memory) {
         uint256 size = _contributions[tokenId].length;
 
         uint256[2][] memory _result = new uint256[2][](size);
         for (uint256 i = 0; i < _contributions[tokenId].length; i++) {
-            //_result.push([contributions[tokenId][i].TokenId,contributions[tokenId][i].Weight]);
             _result[i][0] = _contributions[tokenId][i].TokenId;
             _result[i][1] = _contributions[tokenId][i].Weight;
         }
@@ -180,27 +160,25 @@ contract I4TKdocToken is
         return _result;
     }
 
-
     /// @notice return the length of the contributions array for a tokenId
     /** @dev simple get function
-      * I4TKnetwork contract need to get this information to be able to store in memory the contribution array for token distribution
-      */
-    /// @param tokenId tokenId 
+     * I4TKnetwork contract need to get this information to be able to store in memory the contribution array for token distribution
+     */
+    /// @param tokenId tokenId
     function getLengthContrib(uint256 tokenId) external view returns (uint256) {
         return _contributions[tokenId].length;
     }
 
-
     /// @notice format the tokenURI to store on-chain
     /** @dev return a  encoded base 64 json file
-      * use of helpful library JsonWriter
-      */
+     * use of helpful library JsonWriter
+     */
     /// @param tokenId id of token
     /// @param CID IPFS CID of the document
     /// @param title title of the document
     /// @param authors list of Authors of the document
     /// @param description description (abstract) of the document
-    /// @param programme research programme 
+    /// @param programme research programme
     /// @param category array of categories
 
     function formatTokenURI(
@@ -213,10 +191,7 @@ contract I4TKdocToken is
         string[] memory category
     ) public pure returns (string memory) {
         string memory _name = string(
-            abi.encodePacked(
-                "I4TK document Token # ",
-                Strings.toString(tokenId)
-            )
+            abi.encodePacked("I4TK document Token # ", Strings.toString(tokenId))
         );
         string memory _contentURI = string(abi.encodePacked("ipfs://", CID));
 

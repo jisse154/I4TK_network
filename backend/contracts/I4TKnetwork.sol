@@ -8,9 +8,9 @@ pragma solidity 0.8.24;
  *  The objective is to animate and structure a DAO around the following functionalities: authentication, peer-review, web of trust and publication.
  */
 /** @dev All function calls are currently implemented without side effects
-  * The I4TK network protocol is linked to a ERC1155 token to manage ownership of all content published by community members
-  * Access to the contract functions are manage through access to function are managed through access role implemented with AccessControl contract from openzeppelin.
-  * The contract can hold ERC1155 token.
+ * The I4TK network protocol is linked to a ERC1155 token to manage ownership of all content published by community members
+ * Access to the contract functions are manage through access to function are managed through access role implemented with AccessControl contract from openzeppelin.
+ * The contract can hold ERC1155 token.
  */
 /// @custom:context This contract was done as final project in the frame of solidity-dev course taught by ALYRA.
 
@@ -19,7 +19,6 @@ import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "./I4TKdocToken.sol";
 
 contract I4TKNetwork is AccessControl, ERC1155Holder {
-
     enum Profiles {
         publicUser,
         researcher,
@@ -39,7 +38,6 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant CONTRIBUTOR_ROLE = keccak256("CONTRIBUTOR_ROLE");
     bytes32 public constant VALIDATOR_ROLE = keccak256("VALIDATOR_ROLE");
-
 
     struct MetadataOfMember {
         Profiles profile;
@@ -71,7 +69,7 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
     );
 
     /**  @dev At contract creation, the address of the token I4TKdocToken is set
-      *  the deployer is granted with ADMIN_ROLE
+     *  the deployer is granted with ADMIN_ROLE
      */
     constructor(address _I4TKdocTokenAddr) {
         I4TKdocTokenAddr = _I4TKdocTokenAddr;
@@ -90,13 +88,11 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
             super.supportsInterface(interfaceId));
     }
 
-    /// @notice get the key of the Profiles Struct 
+    /// @notice get the key of the Profiles Struct
     /// @dev simple getter
-    /// @param profile struct 
+    /// @param profile struct
     /// @return string corresponding to key of the struct value given in @param
-    function getProfilesKeyByValue(
-        Profiles profile
-    ) public pure returns (string memory) {
+    function getProfilesKeyByValue(Profiles profile) public pure returns (string memory) {
         if (Profiles.publicUser == profile) return "publicUser";
         if (Profiles.researcher == profile) return "researcher";
         if (Profiles.labs == profile) return "labs";
@@ -104,39 +100,30 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
         return "";
     }
 
-    /// @notice get the value of the Profiles Struct 
+    /// @notice get the value of the Profiles Struct
     /// @dev simple getter
     /// @param profile string representing a Profiles value
     /// @return value of Profiles struct corresponding to the key given in @param
-    function getProfilesValueByKey(
-        string memory profile
-    ) external pure returns (Profiles) {
+    function getProfilesValueByKey(string memory profile) external pure returns (Profiles) {
         if (keccak256(abi.encodePacked(profile)) == keccak256("publicUser"))
             return Profiles.publicUser;
         if (keccak256(abi.encodePacked(profile)) == keccak256("researcher"))
             return Profiles.researcher;
-        if (keccak256(abi.encodePacked(profile)) == keccak256("labs"))
-            return Profiles.labs;
-        if (keccak256(abi.encodePacked(profile)) == keccak256("admin"))
-            return Profiles.admin;
+        if (keccak256(abi.encodePacked(profile)) == keccak256("labs")) return Profiles.labs;
+        if (keccak256(abi.encodePacked(profile)) == keccak256("admin")) return Profiles.admin;
         revert();
     }
 
     /// @notice Register a new member and grant access role according to the user profiles provided
     /** @dev function can be called only by user having ADMIN_ROLE
-      * emit a {memberRegistered} event.
+     * emit a {memberRegistered} event.
      */
     /// @param addr address of the user
     /// @param profile profile value to be given to the user
-    
-    function registerMember(
-        address addr,
-        Profiles profile
-    ) external onlyRole(ADMIN_ROLE) {
+
+    function registerMember(address addr, Profiles profile) external onlyRole(ADMIN_ROLE) {
         require(
-            profile == Profiles.researcher ||
-                profile == Profiles.labs ||
-                profile == Profiles.admin,
+            profile == Profiles.researcher || profile == Profiles.labs || profile == Profiles.admin,
             "Profile name not recognized!"
         );
 
@@ -161,18 +148,12 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
 
     /// @notice revoke member from the community
     /** @dev function can be called only by user having ADMIN_ROLE
-      * emit a {memberRevoked} event.
+     * emit a {memberRevoked} event.
      */
     /// @param addr address of the user to revoke
 
-    function revokeMember(
-        address addr
-    ) external onlyRole(ADMIN_ROLE) {
-        require(
-          Members[addr].isMember,
-            "Cannot revoke because it is not a member"
-        );
-
+    function revokeMember(address addr) external onlyRole(ADMIN_ROLE) {
+        require(Members[addr].isMember, "Cannot revoke because it is not a member");
 
         if (Members[addr].profile == Profiles.researcher) {
             revokeRole(CONTRIBUTOR_ROLE, addr);
@@ -183,7 +164,7 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
             revokeRole(VALIDATOR_ROLE, addr);
         }
 
-        if (Members[addr].profile== Profiles.admin) {
+        if (Members[addr].profile == Profiles.admin) {
             revokeRole(ADMIN_ROLE, addr);
         }
 
@@ -193,13 +174,12 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
         emit memberRevoked(addr);
     }
 
-
     /// @notice Function allowing a member to propose a new content to the community
     /** @dev function can be called only by user having CONTRIBUTOR_ROLE
-      * by this function a new id of the token I4TKdocToken will be minted and deposit in this contract.
-      * function will revert if a token list in the reference doesn't exist already.
-      * Pay attention to provide the tokenURI in the good format.
-      * emit a {contentProposed} event.
+     * by this function a new id of the token I4TKdocToken will be minted and deposit in this contract.
+     * function will revert if a token list in the reference doesn't exist already.
+     * Pay attention to provide the tokenURI in the good format.
+     * emit a {contentProposed} event.
      */
     /// @param tokenURI URI of the new token created, the tokenURI must be formatted thanks to the function formatTokenURI() of the I4TKdocToken contract.
     /// @param references a array of the existing tokenId referenced in this new content proposed.
@@ -209,13 +189,8 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
         uint256[] memory references
     ) external onlyRole(CONTRIBUTOR_ROLE) {
         for (uint256 i = 0; i < references.length; i++) {
-            if (
-                token.exists(references[i]) == false ||
-                status[references[i]] != Status.validated
-            ) {
-                revert tokenInReferenceNotExistOrNotValidated({
-                    wrongTokenId: references[i]
-                });
+            if (token.exists(references[i]) == false || status[references[i]] != Status.validated) {
+                revert tokenInReferenceNotExistOrNotValidated({wrongTokenId: references[i]});
             }
         }
         bytes memory data;
@@ -224,18 +199,17 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
         uint256 tokenId = token.mint(address(this), tokenURI, references, data);
         nbValidation[tokenId] = 0;
         status[tokenId] = Status.proposed;
-        proposedDate[tokenId]=block.timestamp;
+        proposedDate[tokenId] = block.timestamp;
 
         emit contentProposed(creator, tokenId, tokenURI, block.timestamp);
     }
 
-
     /// @notice Function allowing a member to validate a content proposed by another member
     /** @dev function can be called only by user having VALIDATOR_ROLE
-      * one validator can only validate the content once, the creator of the content cannot validate.
-      * to the fourth validation, the tokens are released and sent to the creator of validated content and the creator of the content in reference. 
-      * The distribution is done according to the protocol rules
-      * emit a {contentValidation} event.
+     * one validator can only validate the content once, the creator of the content cannot validate.
+     * to the fourth validation, the tokens are released and sent to the creator of validated content and the creator of the content in reference.
+     * The distribution is done according to the protocol rules
+     * emit a {contentValidation} event.
      */
     /// @param tokenId id of the token represented the content validated
 
@@ -271,30 +245,27 @@ contract I4TKNetwork is AccessControl, ERC1155Holder {
     /*  @dev private function. distribution done according to the protocol rules
      *  the distribution is done according the contribution array got from token contract
      */
-    /// @param _tokenId id of the token that supply quantity will be distributed 
+    /// @param _tokenId id of the token that supply quantity will be distributed
     function _distribution(uint _tokenId) private onlyRole(VALIDATOR_ROLE) {
         uint256 nbContrib = token.getLengthContrib(_tokenId);
         address _to;
         uint256[2][] memory contribList = new uint256[2][](nbContrib);
         contribList = token.getcontributions(_tokenId);
-        uint256 qtyTokenInContractBeforeDistribution = token.balanceOf(address(this),_tokenId);
+        uint256 qtyTokenInContractBeforeDistribution = token.balanceOf(address(this), _tokenId);
 
         for (uint256 i = 0; i < contribList.length; i++) {
             uint256 sourceTokenId = contribList[i][0];
-            
+
             _to = token.getTokenCreator(sourceTokenId);
-            uint256 _value = (qtyTokenInContractBeforeDistribution *
-                contribList[i][1]) / 1e6;
+            uint256 _value = (qtyTokenInContractBeforeDistribution * contribList[i][1]) / 1e6;
             token.safeTransferFrom(address(this), _to, _tokenId, _value, "");
         }
 
         uint256 balanceContractTokenId = token.balanceOf(address(this), _tokenId);
         _to = token.getTokenCreator(_tokenId);
 
-        if (balanceContractTokenId>0) {
+        if (balanceContractTokenId > 0) {
             token.safeTransferFrom(address(this), _to, _tokenId, balanceContractTokenId, "");
         }
     }
-
-
 }

@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# Check code lint & code spell (backend side)
+echo "Checking code lint and code spell..."
+(cd backend && npm run solhint && npx prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol')
+LINT_RESULT=$?
+
+if [ $LINT_RESULT -ne 0 ]; then
+  echo "Code formatting issues found (backend). Commit aborted."
+  exit 1
+fi
+
+# # Check code lint & code spell (frontend side)
+# echo "Checking code lint and code spell..."
+# (cd frontend && pnpm lint && pnpm cspell)
+# LINT_RESULT=$?
+
+# if [ $LINT_RESULT -ne 0 ]; then
+#   echo "Code formatting issues found (frontend). Commit aborted."
+#   exit 1
+# fi
+
+# Execute unit tests
+echo "Running tests..."
+(cd backend && npc hardhat test)
+TEST_RESULT=$?
+
+if [ $TEST_RESULT -ne 0 ]; then
+  echo "Tests failed. Commit aborted."
+  exit 1
+fi
+
+echo "All checks passed. Proceeding with commit."
+exit 0
