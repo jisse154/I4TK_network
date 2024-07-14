@@ -22,7 +22,7 @@ fi
 
 # Execute unit tests
 echo "Running tests..."
-(cd backend && npc hardhat test)
+(cd backend && npx hardhat test)
 TEST_RESULT=$?
 
 if [ $TEST_RESULT -ne 0 ]; then

@@ -38,7 +38,7 @@ contract I4TKdocToken is ERC1155, ERC1155URIStorage, AccessControl, ERC1155Suppl
 
     mapping(uint256 => Contribution[]) private _contributions;
     mapping(uint256 => uint256[]) private _tokenIdReferences;
-    mapping(uint265 => address) private _creator;
+    mapping(uint256 => address) private _creator;
 
     uint256 private _tokenIdCounter;
     int256 public lastTokenId = -1;
