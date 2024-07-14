@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:prettier": "prettier '**/*.{js,ts,tsx,jsx}' --write"
+    "lint:prettier": "prettier --ignore-path .prettierignore '**/*.{js,ts,tsx,jsx}' --write"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.1",
