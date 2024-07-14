@@ -12,10 +12,10 @@ module.exports = {
   },
   networks: {
     hardhat:{},
-  //   sepolia: {
-  //     accounts: [`0x${process.env.PRIVATE_KEY}`],
-  //     chainId: 11155111,
-  //     url: process.env.RPC,
-  //   },
+    // sepolia: {
+    //   accounts: [`0x${process.env.PRIVATE_KEY}`],
+    //   chainId: 11155111,
+    //   url: process.env.RPC,
+    // },
    }
 };

@@ -64,5 +64,5 @@ main()
 
   //verify on etherscan TOKEN contract: npx hardhat verify --network sepolia contract_address "address token"
 
-//token deployed to 0x431Dc5f0176Cf579Ce2D9A445B953fa9FC75f036
-//contract deployed to 0x920800f339FA7b66342368D7ecAf1eEDcE40305E
+//token deployed to 0x06Fc114E58b8Be5d03b5B7b03ab7f0D3C9605288
+//contract deployed to 0xa9870f477E6362E0810948fd87c0398c2c0a4F55

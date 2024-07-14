@@ -27,7 +27,7 @@ export default function Home() {
       event: parseAbiItem(
         "event contentPublished(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date)",
       ),
-      fromBlock: 0n,
+      fromBlock: 6309800n,
       toBlock: "latest",
     });
 
@@ -39,7 +39,7 @@ export default function Home() {
       address: I4TKnetworkAddress,
       abi: I4TKnetworkABI,
       eventName: "memberRegistered",
-      fromBlock: 0n,
+      fromBlock: 6309800n,
       toBlock: "latest",
     });
 
@@ -51,7 +51,7 @@ export default function Home() {
     const proposeEvents = await publicClient.getLogs({
       address: I4TKnetworkAddress,
       event: parseAbiItem("event memberRevoked(address addr)"),
-      fromBlock: 0n,
+      fromBlock: 6309800n,
       toBlock: "latest",
     });
 

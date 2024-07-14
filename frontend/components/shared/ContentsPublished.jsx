@@ -21,7 +21,7 @@ const ContentsPublished = () => {
       event: parseAbiItem(
         "event contentPublished(address indexed creator, uint256 indexed tokenId, string tokenURI, uint256 date)",
       ),
-      fromBlock: 0n,
+      fromBlock: 6309800n,
       toBlock: "latest",
     });
 
