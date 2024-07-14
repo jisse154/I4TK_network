@@ -10,11 +10,11 @@ module.exports = {
     apiKey:  process.env.ETHERSCAN_API_KEY
 
   },
-  networks: {
-    sepolia: {
-      accounts: [`0x${process.env.PRIVATE_KEY}`],
-      chainId: 11155111,
-      url: process.env.RPC,
-    },
-  }
+  // networks: {
+  //   sepolia: {
+  //     accounts: [`0x${process.env.PRIVATE_KEY}`],
+  //     chainId: 11155111,
+  //     url: process.env.RPC,
+  //   },
+  //}
 };
