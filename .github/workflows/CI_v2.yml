@@ -34,4 +34,4 @@ jobs:
 
       - name: Run Tests
         run: 
-          cd backend && npx hardhat test
+          cd backend && npx hardhat test --network hardhat
