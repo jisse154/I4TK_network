@@ -5,7 +5,7 @@ the aim of the project is to develop a solution supporting a global community of
 
 In order to manage the intellectual property of content created and published by this community, we offer a DApp to guarantee approved, uncensorable, global and decentralized content management.
 
-Live Demo: https://i4-tk-network.vercel.app/ - Base Sepolia
+Live Demo: https://i4-tk-network.vercel.app/ - Sepolia
 
 
 ------------------------------
