@@ -51,7 +51,7 @@ const Page = () => {
               </section>
             </div>
             <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0 pr-10">
-              <a href="/contribute/propose">
+              <a href="/contribute">
                 <button
                   className="inline-block text-lg font-medium text-center focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border-transparent rounded-md shadow-sm h-full w-full border bg-orange-300 text-white hover:bg-orange-600 "
                   type="submit"
